@@ -1,0 +1,71 @@
+#parse("coralpres/header.vm")
+
+<div id="stages" style="display:none;">#parse('coralpres/coralpres.csv')</div>
+
+<h1>The Stages File / Outline</h1>
+
+<table border="1" width="80%">
+	<tr>
+		<th>template</th>
+		<th>loop</th>
+		<th>repeat</th>
+		<th>condition</th>
+		<th>validation</th>
+		<th>wait</th>
+	</tr>
+	
+<script>
+function processData(allText) {
+    var allTextLines = allText.split(',_cr');
+    var headers = allTextLines[0].split(',');
+    var lines = [];
+
+    for (var i=1; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+            var tarr = [];
+            for (var j=0; j<headers.length; j++) {
+                if ( j <= data.length && data[j] ) {
+                   tarr.push( data[j] );
+                } else {
+                   tarr.push( "&nbsp;" );
+                }
+            }
+            lines.push(tarr);
+        
+    }
+    return lines;
+}
+
+stageslines = processData(document.getElementById('stages').innerHTML);
+
+for ( stage in stageslines ) {
+    titleparts =  stageslines[stage][0].split('/');
+
+	if ( titleparts[1] == '$section' ) {
+    	document.write("<tr>");
+    if ( titleparts.length == 2 ) {
+    	document.write("<td><font color='#666666'>"+titleparts[0]+"</font>/<font color='#000066'><b>"+titleparts[1]+"<b></font></td>");
+    } else {
+    	document.write("<td><font color='#666666'>"+titleparts[0]+"</font>/<font color='#000000'>"+titleparts[1]+"</font>/<font color='#000066'><b>"+titleparts[2]+"<b></font></td>");
+    }
+    document.write("<td>"+stageslines[stage][1]+"</td>");
+    document.write("<td>"+stageslines[stage][2]+"</td>");
+    document.write("<td>"+stageslines[stage][3]+"</td>");
+    document.write("<td>"+stageslines[stage][4]+"</td>");
+    document.write("<td>"+stageslines[stage][5]+"</td>");
+   	} else {
+    	document.write("<tr style='line-height:1px; padding: 0px; margin: 0px;'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>");
+   	}
+    document.write("</tr>");
+}
+
+</script>
+</table>
+
+<div class="contbutton">
+<p>
+<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

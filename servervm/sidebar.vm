@@ -1,0 +1,10 @@
+<html>
+	<body>
+		<a href='exp://host/__SERVER/servervm/info.vm'>info.vm</a> <br>
+		<a href='exp://host/__SERVER/servervm/stages.vm'>stages.vm</a> <br>
+		<a href='exp://host/__SERVER/servervm/clients.vm'>admin.vm</a> <br>
+		<a href='exp://host/__SERVER/servervm/admin.vm'>admin.vm</a> <br>
+		<a href='exp://host/__SERVER/?debug=ON'>DEBUG ON</a> <br>
+		<a href='exp://host/__SERVER/?debug=OFF'>DEBUG OFF</a> <br>
+	</body>
+</html>

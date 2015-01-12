@@ -1,0 +1,57 @@
+<html><body>
+
+<h1>CLIENTS <a href="exp://host/__SERVER/servervm/sidebar.html">menu</a>  <a href="open://host/./servervm/info.vm">edit</a></h1>
+ 
+<table border=1>
+<tr>
+<td><b>name</b></td>
+</tr>
+
+#foreach ($client in $_clients ) 
+
+#if ( $test )
+    #set( $bg = "#FFFFFF" )
+    #set( $test = false )
+#else
+    #set( $bg = "#D2D2D2" )
+    #set( $test = true )
+#end  
+
+<tr>
+<td bgcolor="$bg"><b>$!client.get("name") </b></td>
+<td bgcolor="$bg"><b>$!client.get("id") </b></td>
+<td bgcolor="$bg"><b>$!client.get("connected") </b></td>
+</tr>
+#end
+</table>
+
+#*
+ * make sure the page refreshes every 10 seconds
+ *#
+<script>
+
+#set( $tt = $_query.infotimeout )
+#if ( !($tt) )
+  #set($t = 10)
+#else
+  #set($I = 0)
+  #set( $t = $I.parseInt($tt) )
+#end
+#set( $dt = 1000 * $t ) 
+
+interval = setInterval(function() {
+    var form =  document.getElementById('infochange');
+    if( form.dorefresh.checked == true ) {
+        clearInterval(interval);
+        form.submit();
+    } 
+    clearInterval(interval);
+}, $dt);
+
+</script>
+
+<form id="infochange" action="exp://host/__SERVER/servervm/clients.vm">
+	<input type="tel" name="infotimeout" value="$t">
+	<input type="checkbox" name="dorefresh" checked='checked'>
+	<input type="submit" name="refresh" value="refresh">
+</form>

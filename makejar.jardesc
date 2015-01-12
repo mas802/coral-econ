@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="US-ASCII" standalone="no"?>
+<jardesc>
+    <jar path="/Users/mas/Dropbox/CORAL/lib/0.1.12/coral.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Coral/makejar.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=Coral/src&lt;coral{CoralHead.java[CoralHead" manifestLocation="/OETFull/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Coral/src&lt;coral.service"/>
+        <javaElement handleIdentifier="=Coral/src&lt;coral.model"/>
+        <javaElement handleIdentifier="=Coral/client"/>
+        <javaElement handleIdentifier="=Coral/src&lt;coral.utils"/>
+        <javaElement handleIdentifier="=Coral/src&lt;coral"/>
+        <javaElement handleIdentifier="=Coral/src&lt;coral.data"/>
+    </selectedElements>
+</jardesc>

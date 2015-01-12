@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="C:/Users/schaffne/Dropbox/CoralCam/coralclient.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Coral/makejarclient.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="/OETFull/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Coral/src&lt;coral.utils{CoralUtils.java"/>
+        <javaElement handleIdentifier="=Coral/client&lt;coral{RessyncServable.java"/>
+        <javaElement handleIdentifier="=Coral/client&lt;coral{PolypVsetServable.java"/>
+        <javaElement handleIdentifier="=Coral/client&lt;coral{CoralPolyp.java"/>
+    </selectedElements>
+</jardesc>

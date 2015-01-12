@@ -1,0 +1,28 @@
+#parse("coralpres/header.vm")
+
+<h1>Loops</h1>
+
+<ul>
+	<li>Main disruption to the sequential flow of the experiment (top-to-bottom of the stages file)</li>
+	<li>Just jump back to the specified stage.</li>
+	<li>Can be nested (loop-in-a-loop).</li>
+	<li>Usually will have a script file at the start to set a counter:</li>
+</ul>
+
+<pre>#parse('coralpres/stages/loop.js')
+</pre>
+
+<ul>
+	<li>Hence the counter will increase from <b>1 to $counter</b></li>
+</ul>
+
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

@@ -1,0 +1,37 @@
+#*
+
+Example info.vm file to display updated values on the server side.
+
+*#
+
+#set ($cols = ["finalpayoff","agent","p1","p2","p3","round","payoff","contribution"])
+
+<table border=1>
+<tr>
+<td><b>number</b></td>
+#foreach ($c in $cols) 
+   <td><b>$c</b></td>
+#end
+</tr>
+
+#foreach ($dta in $data.values()) 
+#if ( $test )
+    #set( $bg = "#FFFFFF" )
+    #set( $test = false )
+#else
+    #set( $bg = "#D2D2D2" )
+    #set( $test = true )
+#end  
+<tr>
+   #set( $bg2 = $bg )
+<td bgcolor="$bg"><b>$!dta.get("number") </b></td>
+#foreach ($col in $cols)
+   <td bgcolor="$bg">$!dta.get($col)</td>
+#end
+</tr>
+#end
+</table>
+
+<p>
+All values are only updated when the participant switches the screen.
+</p>

@@ -1,0 +1,30 @@
+<html><body>	
+	<h1>ADMIN  <a href="exp://host/__SERVER/servervm/sidebar.html">menu</a></h1>
+	
+	WARNING: The form below allows to execute arbitrary commands, use with caution! <br>
+	
+	<input type="text" id="cmd" name="cmd" value="exp://host/">
+	<input type="button" name="go" value="go" onclick="window.location=document.getElementById('cmd').value;">
+	
+
+<h2>Export</h2>
+	
+<form action="exp://host/__SERVER/"> 
+	<input type="text" id="export" name="export" value="export.raw">
+	<input type="submit" name="submit" value="export" >
+</form>
+
+<h2>Client</h2>
+
+<form action="exp://host/__SERVER/"> 
+    <textarea id="makeclient" name="makeclient"rows=24 cols=80>
+coral.polyp.number = 4
+coral.polyp.ontop = false
+coral.polyp.fullscreen = false    
+#coral.polyp.robot = robot.js
+
+#coral.polyp.width=1600
+#coral.polyp.height=900
+    </textarea>
+    <input type="submit" name="submit" value="new client" >
+</form>

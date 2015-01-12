@@ -1,0 +1,19 @@
+#parse("coralpres/header.vm")
+
+<h1>Crash recovery</h1>
+
+<ul>
+	<li>The clients state is kept on the server, they can usually recover to the last stage.</li>
+	<li>All network data is saved in a log file on the server, </li>
+	<li>Automation/Testing</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

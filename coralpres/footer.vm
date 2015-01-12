@@ -1,0 +1,34 @@
+
+
+#if ($debug)
+<p align="right">
+<input type="submit" name="skipback" value="BACK"> <input type="submit" name="skiperror" value="SKIP"> <br>
+<input type="submit" name="reload" value="RELOAD"> <br>
+<a href="open://host/./$data.template">$data.template</a> <br>
+<a href="open://host/./res/_exp.html">_exp.html</a> <br>
+<a href="exp://host/__BEGIN">start new</a> <br>
+$!error <br>
+$!args <br>
+<br>
+<font style="color: #FF0000">
+DEBUG MODE, press "SKIP" to continue when stuck and "RELOAD" to reload.<br><br>
+
+
+#foreach( $key in $data.keySet())
+$key => $data.get($key), 
+#end
+</font>
+</p>
+#end
+
+  </form>
+
+</div>
+  
+<div style="position: absolute; bottom: 20px; left: 20px;">
+	<img src="CORAL_ICON.png" width="104px" height="104px">
+</div>
+</div>
+
+  </body>
+</html>

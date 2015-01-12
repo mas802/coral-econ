@@ -1,0 +1,59 @@
+#parse("coralpres/header.vm")
+
+
+#if ( $altlook == 0 ) 
+<h1>Almost any look is possible</h1>
+
+<p>
+<table>
+	<tr>
+		<td width="33%"><img src='screenshot01.png' width='100%'></td>
+		<td width="33%"><img src='screenshot02.png' width='100%'></td>
+		<td width="33%"><img src='screenshot03.png' width='100%'></td>
+	</tr>
+	<tr>
+		<td><img src='screenshot04.png' width='100%'></td>
+		<td><img src='screenshot05.png' width='100%'></td>
+		<td><img src='screenshot06.png' width='100%'></td>
+	</tr>
+</table>
+</p>
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+#else
+
+<style>
+	td {
+		border: 1px solid black;
+		border-collapse: separate;
+		padding: 20pt;
+	}
+</style>
+
+<p>
+<table style="background: #EAEAEA;border: 10px solid #FFFF00; border-collapse: separate; font-size: 14pt; font-family: Arial; width: 800px;height: 600px;">
+	<tr>
+		<td align="left" style="height:10%; width: 60%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Period&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;of&nbsp;&nbsp;3</td>
+		<td align="right" >Time Remaining: 0:00</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center"><br>Any look is possible ...
+		<br><br><br><br><input type='submit' name='continue' value='CONTINUE' style="font-size: 14pt; font-weight: bold; border: 1px solid #000000; background-color: #FF7878;">	
+		</td>
+	</tr>
+</table>
+</p>
+#end
+
+#if ( $altlook < 2 ) 
+	#set( $altlook = $altlook + 1 )
+#end
+<input type="hidden" name='altlook' value='$altlook' >
+
+
+#parse("coralpres/footer.vm")

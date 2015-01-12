@@ -1,0 +1,36 @@
+#parse("stages/header.vm")
+
+<h1>Choose a Contribution</h1>
+
+<br>
+<br>
+<br>
+
+<br>
+<br>
+<br>   
+
+
+<p>
+	Please enter your contribution: &nbsp &nbsp
+	<input type="text" name="contribution" value="$!contribution"  pattern="[0-9]*" size="2">
+    #if ( $error.contribution == "NullOrEmpty"  || $error.contribution == "noNumber"  )
+        <br><font color='#ff0000;'>You have to enter a number here!</font>
+    #end
+    #if ( $error.contribution == "tooBig" || $error.contribution == "tooSmall" )
+		<br><font color='#ff000;'>The contribution has to be between 0 and $endownment</font>
+    #end
+</p>
+ 
+<br>  
+<br>  
+<br>  
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("stages/footer.vm")

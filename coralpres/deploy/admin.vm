@@ -1,0 +1,29 @@
+#parse("coralpres/header.vm")
+
+<h1>Server Interface</h1>
+
+
+<ul>
+<li>Two main screens: INFO.vm and STAGES.vm.</li>
+<li>Can be heavily customised.</li>
+</ul>
+
+
+<p>
+<table>
+	<tr>
+		<td width="50%"><img src='infovm.png' width='100%'></td>
+		<td width="50%"><img src='stagesvm.png' width='100%'></td>
+	</tr>
+</table>
+</p>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

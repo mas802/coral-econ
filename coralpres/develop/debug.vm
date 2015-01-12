@@ -1,0 +1,31 @@
+#parse("coralpres/header.vm")
+
+<h1>Debug mode</h1>
+
+<br>
+<br>
+<br>
+
+<ul>
+<li>Special mode that allows to work progressively on the templates.</li>
+<li>Extra information is displayed at the bottom of the page.</li>
+<li>Special navigation buttons: BACK, SKIP, RELOAD.</li>
+<li>Links to the template file and the current html file (only if run on the server).
+</ul>
+
+<br>
+<br>
+<br>
+
+
+
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

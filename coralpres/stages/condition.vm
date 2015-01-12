@@ -1,0 +1,21 @@
+#parse("coralpres/header.vm")
+
+<h1>Condition</h1>
+
+<ul>
+	<li>Second option to control the flow of the experiment (Similar to Participate=1).</li>
+	<li>Stage (template OR script) will only be executed if the condition is met.</li>
+	<li>Same syntax as validation, but no error message handling.</li>
+	<li><b>This page is only shown on the last iteration of the loop. (counter==3)</b></li>
+</ul>
+
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

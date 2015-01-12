@@ -1,0 +1,9 @@
+# comments begin with a '#'
+# the format is <mime type> <space separated file extensions>
+# for example:
+text/plain txt text TXT tex do java m log 
+application/pdf pdf PDF
+image/png png PNG
+image/jpeg jpg jpeg JPG JPEG
+text/anytable atbl anytable
+text/html htm html HTML HTM

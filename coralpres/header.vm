@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<STYLE type="text/css">
+		body {
+		   	font-family: Helvetica;
+		   	font-size: 14pt;
+		   	text-align: justify;	   	
+			margin: auto;
+			height: 100%;
+	   	}
+	   	h1 {
+		   	font-size: 36pt;
+	    	background: #094f95; 
+	    	color: white;
+	   		text-align: center;
+	   		margin-top: 0px;
+	   	}
+	   	h2 {
+	   		text-align: center;
+	   		margin-top: 0px;
+	   	}
+	   	h3 {
+        	margin-left: 10%;
+        	margin-right: 10%;
+	    }
+	   	input {
+	        font-size: 20pt;
+	   	}
+	   	textarea {
+	        font-size: 20pt;
+	   	}
+	   	table { 
+        	margin-left: 10%;
+        	margin-right: 10%;
+        	border-collapse: collapse;
+        	border: 3px solid #000000;
+        }
+        td {
+            padding: 2px;
+        }
+		input[type="submit"]  {
+	        font-size: 24pt;
+		    border: 1px solid #006;
+    		background: #9cf;
+	   	}
+	   	input[type="radio"]  {
+	        font-size: 56pt;
+	        width: 26px;
+	        height: 26px;
+	        padding: 0px;
+	        margin: px;
+	    }
+	   	input[type="checkbox"]  {
+	        font-size: 56pt;
+	        width: 26px;
+	        height: 26px;
+	        padding: 0px;
+	        margin: px;
+	    }
+	    p {
+        	margin-left: 10%;
+        	margin-right: 10%;
+	    }
+	    pre {
+	        border: 1px solid #000000;
+	        background-color: #eaeaea;
+	        padding: 10pt;
+        	margin-left: 10%;
+        	margin-right: 10%;
+	    }
+	    ul {
+        	margin-left: 10%;
+        	margin-right: 10%;
+	    }
+	    ul li {
+        	font-size: 24pt;
+        	margin: 10pt;
+	    }
+	    p.cont {
+	   		text-align: left;
+	   	}
+	   	p.pcentered {
+           margin-left: auto; 
+           margin-right: auto; 
+	   	   width: 45em;
+	   	}
+	    div.contbutton {
+            position:absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            background-color: #FFFFFF;
+	    }
+       	div.decision {
+       	    color: #888888;
+       	    text-align: center;
+       	    font-size: 18pt;
+       	    font-weight: bold;
+       	    padding: 40px;
+       	    background-color: #ffffea;
+       	    border: 1px solid #888888;
+       	}
+       	div.active {
+       	    color: #000000;
+       	    background-color: #eaffea;
+       	    border: 1px solid #000000;
+       	}
+       	div.inactive {
+       	    color: #888888;
+       	    background-color: #ffeaea;
+       	    border: 1px solid #888888;
+       	}
+       </STYLE>
+  </head>
+  <body>
+ 
+
+   <div>
+ 
+  <form action="exp://host/exp" name="coralpres" id="coralpres"> 
+   
+<br><br>
+
+
+#macro (selectiontable $label $name $labels $values $sep)
+<script>
+	
+try {
+	
+var ${name}_counter = 0;
+function setValueFor${name}( value )
+{
+    try {
+    if ( value ) {
+        #foreach ($v in $values)
+        document.getElementById("div_${name}_${v}").className = ( value == "$v" )?"decision active":"decision inactive";
+        #end
+        document.getElementById("${name}").value = value;
+    }    
+
+    var ts = new Date().getTime();
+    document.getElementById("${name}_change_counter").value = ${name}_counter;
+	${name}_counter++;
+    
+	var tsinput = document.createElement("input");
+	tsinput.setAttribute("type", "hidden");
+	tsinput.setAttribute("name", "${name}_change_" + ${name}_counter + "_time" );
+	tsinput.setAttribute("value", ts);
+	
+	//append to form element that you want .
+	document.forms['pridExp'].appendChild(tsinput);
+
+	var input = document.createElement("input");
+	input.setAttribute("type", "hidden");
+	input.setAttribute("name", "${name}_change_" + ${name}_counter + "_value" );
+	input.setAttribute("value", value);
+	
+	//append to form element that you want .
+	document.forms["pridExp"].appendChild(input);
+	} catch(err) {
+	   alert("setit error: " + err.message + " " + err.stack);
+	   throw err;
+	}
+	
+}
+
+} catch(err) {
+	alert("setit error: " + err.message + " " + err.stack);
+	throw err;
+}
+
+</script>
+  #set( $value = "" )
+  #set( $value = $data.get($name) )
+  #set($i=0)
+  <table>
+  <tr><td valign='top'>
+  #if ( $error.get($name) == "NullOrEmpty" )
+    <font color='#ff0000;'>
+    #else
+    <font>
+  #end
+    $label
+    </font>
+</td>
+</tr>
+  #set($i=0)
+  #foreach ($v in $values)
+    <tr> 
+    <td onclick='setValueFor${name}( "$v" );'>
+    <div class="decision" id="div_${name}_${v}" > $labels.get($i) </div>  
+    #set($i=1+$i)
+    </td>
+    </tr>
+  #end
+</table>
+<input type='hidden' name='$name' id="$name" value ='$!value' >
+<input type='hidden' name='${name}_change_counter' id="${name}_change_counter" value ='' >
+<script>
+    setValueFor${name}($!value);
+</script>
+#end
+
+#macro (timeout $label $time)
+<p id="countdown">
+</p>  
+    
+<script>
+
+seconds = $time;
+second_text = '';
+
+interval = setInterval(function() {
+    var el = document.getElementById("countdown");
+    second_text = seconds > 1 ? 'seconds' : 'second';
+    el.innerHTML = '$label' + seconds + ' ' + second_text + '.';
+
+    if(seconds == 0) {
+        clearInterval(interval);
+        document.getElementById('pridExp').submit();
+    } else {
+        seconds--;
+    }
+}, 1000);
+
+</script>
+#end

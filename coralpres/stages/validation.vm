@@ -1,0 +1,51 @@
+#parse("coralpres/header.vm")
+
+<h1>Validation</h1>
+
+<ul>
+	<li>Validation column allows to specify server side validation.</li>
+</ul>
+
+<br>
+
+<p>
+Enter something: 
+<span width="200px" align='left'>
+<input type='text' name='number' pattern="[0-9]*" value='$!number'> <br>
+</span>
+#if ( $error.number )
+<br><font color='#ff0000;'>Specific errors can be displayed, e.g. for non-existence.</font>
+#end
+</p>
+
+<br>
+<br>
+
+<p>
+Enter a number between 10.00 and 10.50: 
+<span width="200px" align='left'>
+<input type='text' name='val' pattern="[0-9]*" value='$!val'> <br>
+</span>
+#if ( $error.val == "tooBig" )
+<br><font color='#ff0000;'>But also for too big!</font>
+#elseif ( $error.val == "tooSmall" )
+<br><font color='#ff0000;'>Or for too small!</font>
+#elseif ( $error.val == "wrongPrecision" )
+<br><font color='#ff00ff;'>Or the wrong precision. </font>
+#elseif ( $error.val == "noNumber" )
+<br><font color='#ff0000;'>Or not numerical.</font>
+#elseif ( $error.val )
+<br><font color='#ff0000;'>Errors are specified in the vm file and can
+be easily adapted!</font>
+#end
+</p>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

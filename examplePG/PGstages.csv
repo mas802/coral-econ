@@ -1,0 +1,8 @@
+template,loop,repeat,condition,validate,wait
+stages/init.js,,,,,stages/info.vm,,,,,
+stages/wait.vm,,,,,all
+stages/beforeEachRound.js,,,,,
+stages/contribution.vm,,,,round;contribution,
+stages/wait.vm,,,,,all
+stages/redistribution.js,4,9,,,
+stages/showPayoff.vm,,,,,

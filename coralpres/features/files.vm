@@ -1,0 +1,20 @@
+#parse("coralpres/header.vm")
+
+<h1>Exchange files</h1>
+
+<ul>
+	<li>* Condition</li>
+	<li></li>
+</ul>
+
+
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

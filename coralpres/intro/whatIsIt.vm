@@ -1,0 +1,20 @@
+#parse("coralpres/header.vm")
+
+<h1>What is it?</h1>
+
+<ul>
+	<li>A lightweight framework to run economic experiments.</li>
+	<li>Organises the experiment with a simple sequential stages csv file.</li>
+	<li>Based on open standards and web technology (Java, HTML, JavaScript, ...)</li>
+	<li>Very flexible and easily extendable to accomodate many situations.</li>
+	<li>Runs on almost any platform (and cross platform).</li>
+	<li>NOT A WEBSERVER, but uses web technology.</li>
+</ul>
+
+<div class="contbutton">
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

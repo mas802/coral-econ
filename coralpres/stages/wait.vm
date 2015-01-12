@@ -1,0 +1,23 @@
+#parse("coralpres/header.vm")
+
+<h1>Wait</h1>
+
+<br>
+<br>
+<br>
+
+<ul>
+	<li>Simple facility to sync everybody up for interactive games.</li>
+	<li>The experiment automatically proceeds from a wait stage when everybody has caught up.</li>
+	<li>Usually at the beginning and end of a loop and before data is transfered.</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

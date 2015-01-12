@@ -1,0 +1,20 @@
+#parse("coralpres/header.vm")
+
+
+<br>
+<br>
+<br>
+	
+<p  style="margin-left: auto;margin-right: auto; text-align:center;">
+<img src="CORAL_ICON.png" width="512px" height="512px">
+</p>
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+
+#parse("coralpres/footer.vm")

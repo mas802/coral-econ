@@ -1,0 +1,29 @@
+#parse("coralpres/header.vm")
+
+<h1>Why does it exist?</h1>
+
+<ul>
+	<li>Software developper meets experimental economics.</li>
+	<li>Issues with ...
+<ul>
+	<li>Timing, low level control.</li>
+	<li>Looks and graphics.</li>
+	<li>Stability, memory and network usage.</li>
+	<li>DRY (Don't Repeat Yourself).</li>
+	<li>Reusability of components.</li>
+	<li>Separation of logic and view (MVC Pattern).</li>
+	<li>Build automation, debugging and testing.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>See Schaffner (2013) WP for more details.</p>
+
+<div class="contbutton">
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

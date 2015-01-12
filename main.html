@@ -1,0 +1,38 @@
+<html>
+<head>
+	<script>
+	    function infoCallback(args) {
+	    	try {
+	        if ( args['lastid'] ) {
+	            document.getElementById('lastid').value = args['lastid'];
+	        }
+	        if ( args['name'] ) {
+	            document.getElementById('name').value = args['name'];
+	        }
+	    	} catch (err) {
+	        	alert('callback error ' + err);
+	    	}
+	    }
+	</script>
+</head>
+<body>
+
+<a href="exp://host/__BEGIN"> BEGIN</a> <br> <br>
+<a href="exp://host/__SERVER"> SERVER</a> <br> <br>
+
+<a href="http://ec2-54-252-160-68.ap-southeast-2.compute.amazonaws.com:8080/__BEGIN"> __AWS</a> <br> <br>
+
+
+<form action="exp://host/__REFRESH"><input type="tel" value="" name="refreshid"></form>
+
+<h3>connect</h3>
+<form action="config:__INIT/connection">
+name: <input type="text" value="host" name="name"><br>
+myname: <input type="text" value="host" name="myname"><br>
+host: <input type="text" value="localhost" name="host"><br>
+port: <input type="tel" value="43802" name="port">
+<input type="submit" value="go" name="submit">
+</form>
+
+</body>
+</html>

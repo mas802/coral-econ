@@ -1,0 +1,22 @@
+#parse("stages/header.vm")
+
+<h1>Payoff</h1>
+
+<br>
+<br>
+<br>
+
+<p><b>Payoff Round:</b> $!payoffround</p>
+<p><b>Your payoff:</b> $!finalpayoff</p>
+
+<br>
+<br>
+<br>
+
+<p>The experiment is finished now.</p>
+
+<br>
+<br>
+<br>
+
+#parse("stages/footer.vm")

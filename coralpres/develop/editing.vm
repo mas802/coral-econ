@@ -1,0 +1,19 @@
+#parse("coralpres/header.vm")
+
+<h1>Editing</h1>
+
+<ul>
+	<li>All files are text based, so a standard text editor will do.</li>
+	<li>Server and debug mode allow to open files directly.</li>
+	<li>Files can be edited <b>"on the fly"</b>.</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

@@ -1,0 +1,9 @@
+#parse("coralpres/header.vm")
+
+<p  style="margin-left: auto;margin-right: auto; text-align:center;">
+<img src="CORAL_ICON.png" width="512px" height="512px">
+</p>
+
+<h2><a href="http://code.google.com/p/coral-econ/">code.google.com/p/coral-econ/</a></h2>
+
+#parse("coralpres/footer.vm")

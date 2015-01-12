@@ -1,0 +1,13 @@
+#parse("stages/header.vm")
+
+<h1>WAIT</h1>
+
+<br>
+<br>
+<br>
+
+<p>
+<b>Please wait until the experiment continues.</b> 
+</p>
+
+#parse("stages/footer.vm")

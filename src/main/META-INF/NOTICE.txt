@@ -1,0 +1,10 @@
+Coral
+Copyright 2009-2015 Markus Schaffner
+
+Use in an academic context requires citation of the following 
+work (or later iterations thereof).
+http://econpapers.repec.org/paper/qutqubewp/wp016.htm
+
+This product includes or builds on software developed at
+The Apache Software Foundation (http://www.apache.org/).
+

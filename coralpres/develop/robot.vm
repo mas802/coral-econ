@@ -1,0 +1,26 @@
+#parse("coralpres/header.vm")
+
+<h1>Testing: Let the robots loose</h1>
+
+<ul>
+	<li>A simple mechanism for semiautomatic testing.</li>
+	<li>A JavaScript file that is automatically run after a new page is loaded.</li>
+	<li>Can iterate trough all input fields on the page and fill in appropriate values.</li>
+</ul>
+
+<pre>if ( ref.name == "number" ) {
+    ref.value = 100;
+}</pre>
+
+<pre>if ( ref.name == "val" ) {
+    ref.value = Math.round(Math.random()*60+1000)/100;
+}</pre>
+
+
+<div class="contbutton">
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

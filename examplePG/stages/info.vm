@@ -1,0 +1,50 @@
+#parse("stages/header.vm")
+
+<h1>Introduction</h1>
+
+<br>
+<br>
+<br>
+
+<p>Thank you for participating in this experiment. The purpose 
+of this experiment is to study how people make decisions. In 
+case you should have questions at any time, please raise your hand. 
+Please do not speak to other participants during the experiment 
+and please turn off your mobile phone now. We also ask you not 
+to reveal any details about the experiment after you have participated.
+</p>
+
+<br>
+<br>
+<br>
+
+<p>You will receive $5 for arriving on time. Depending on 
+your decisions and the decisions of other participants, you 
+will receive an additional amount. At the end of the experiment, 
+you can collect the final amount in cash privately 
+in a sealed envelope. 
+</p>
+
+<br>
+<br>
+<br>
+
+<p>
+Please enter your participant number here: 
+<span width="200px" align='left'>
+<input type='text' name='number' pattern="[0-9]*" value='$!number'> <br>
+</span>
+#if ( $error.number )
+<br><font color='#ff0000;'>There seems to be a mistake, please try again.</font>
+#end
+</p>
+
+<br>
+<br>
+<br>
+
+<p>
+<input type='submit' name='submit' value='Continue'>
+</p>
+
+#parse("stages/footer.vm")

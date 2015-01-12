@@ -1,0 +1,21 @@
+#parse("coralpres/header.vm")
+
+<h1>Data</h1>
+
+<ul>
+<li>Data is stored in a local database (in memory or on disk).</li>
+<li>Also stored in log file.</li>
+<li>Long, skinny dataset with individual timestamps for each stage update.</li>
+<li>Export both in long and wide format.</li>
+<li>Import scripts for Stata.</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

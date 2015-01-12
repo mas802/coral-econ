@@ -1,0 +1,26 @@
+#parse("coralpres/header.vm")
+
+<h1>Take a picture (on the iPad)</h1>
+
+<ul>
+	<li>Allows the experiment to take a picture in the middle of an experiment.</li>
+	<li>Sends the picture to the server, which can distribute it to everybody.</li>
+	<li>Anonymouse vs. non-anonymouse studies.</li>
+</ul>
+
+<p>
+<table width="80%">
+	<tr>
+		<td width="100%" align="center"><img src='examplephoto.jpg' width='400px'></td>
+	</tr>
+</table>
+</p>
+
+
+<div class="contbutton">
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

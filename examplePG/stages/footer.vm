@@ -1,0 +1,24 @@
+
+#if ($debug)
+<p align="right">
+<input type="submit" name="skipback" value="BACK"> <input type="submit" name="skiperror" value="SKIP"> <br>
+<input type="submit" name="reload" value="RELOAD"> <br>
+<a href="get://host/./$data.template">$data.template</a> <br>
+<a href="exp://host/__BEGIN">start new</a> <br>
+$!error <br>
+$!args <br>
+<br>
+<font style="color: #FF0000">
+DEBUG MODE, press "SKIP" to continue when stuck and "RELOAD" to reload.<br><br>
+
+#foreach( $key in $data.keySet())
+$key => $!data.get($key), 
+#end
+</font>
+</p>
+#end
+
+  </form>
+
+  </body>
+</html>

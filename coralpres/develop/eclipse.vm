@@ -1,0 +1,21 @@
+#parse("coralpres/header.vm")
+
+<h1>Eclipse plugin</h1>
+
+<p>Eclipse IDE (powerful development environment for Java but with many plugins).</p>
+
+<p>
+<table width="80%">
+	<tr>
+		<td width="100%" align="center"><img src='eclipse.png' width='700px'></td>
+	</tr>
+</table>
+</p>
+
+<div class="contbutton">
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

@@ -1,0 +1,28 @@
+#parse("coralpres/header.vm")
+
+<h1>Works on a wide range of platforms</h1>
+
+
+<p>
+<table>
+	<tr>
+		<td width="33%"><img src='pc.jpg' width='100%'></td>
+		<td width="33%"><img src='mac.jpg' width='100%'></td>
+		<td width="33%"><img src='ipad.png' width='100%'></td>
+	</tr>
+</table>
+</p>
+
+<ul>
+	<li>Runs on a wide range of devices (Java, but: SWT)</li>
+	<li>Native iPad client (server runs on jailbroken devices with Java)</li>
+</ul>
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

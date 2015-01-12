@@ -1,0 +1,14 @@
+#parse("coralpres/header.vm")
+
+<h1></h1>
+
+<ul>
+	<li></li>
+	<li></li>
+</ul>
+
+<p>
+<input type='submit' name='continue' value='Continue'>
+</p>
+
+#parse("coralpres/footer.vm")

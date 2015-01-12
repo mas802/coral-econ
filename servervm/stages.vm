@@ -1,0 +1,60 @@
+<html><body>
+<h1>STAGES <a href="exp://host/__SERVER/servervm/sidebar.html">menu</a> <a href="open://host/./servervm/stages.vm">edit</a></h1>
+
+<table border=1 width="300px">
+<tr>
+<td><b>template</b></td>
+#foreach ($a in $_agentdata) 
+   <td><b>$a.agent</b></td>
+#end
+</tr>
+
+#set( $i = 0 )
+#foreach ($stage in $_stages) 
+<tr>
+<td><b><a href="open://host/./$stage.template">$stage.template</a></b></td>
+#foreach ($a in $_agentdata)
+	#set( $ts = $a.stageCounter()+0 )
+    #if( $ts < $i )
+      <td bgcolor="#ffeaea"></td>
+    #elseif( $i == $ts )
+      <td bgcolor="#eaffea">$a.agent</td>
+    #else
+      <td bgcolor="#eaeaea"></td>
+    #end
+#end
+#set( $i = $i + 1 )
+</tr>
+#end
+</table>
+
+#*
+ * make sure the page refreshes every 10 seconds
+ *#
+<script>
+
+#set( $tt = $_query.stagetimeout )
+#if ( !($tt) )
+  #set($t = 10)
+#else
+  #set($I = 0)
+  #set( $t = $I.parseInt($tt) )
+#end
+#set( $dt = 1000 * $t ) 
+
+interval = setInterval(function() {
+    var form =  document.getElementById('stagechange');
+    if( form.dorefresh.checked == true ) {
+        clearInterval(interval);
+        form.submit();
+    } 
+    clearInterval(interval);
+}, $dt);
+
+</script>
+
+<form id="stagechange" action="exp://host/__SERVER/servervm/stages.vm">
+	<input type="tel" name="stagetimeout" value="$t">
+	<input type="checkbox" name="dorefresh" checked='checked'>
+	<input type="submit" name="refresh" value="refresh">
+</form>

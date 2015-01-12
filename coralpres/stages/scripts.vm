@@ -1,0 +1,25 @@
+#parse("coralpres/header.vm")
+
+<h1>Scripts</h1>
+
+<ul>
+	<li>Scripts control the logic side of the experiment.</li>
+	<li>Defaults to JavaScript, but many other languages supported (e.g. PHP, Python, ...)</li>
+	<li>Controls:
+<ul>
+	<li>Calculations</li>
+	<li>Matching of participants.</li>
+	<li>Cross participant data transfer.</li>
+</ul>
+	</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")

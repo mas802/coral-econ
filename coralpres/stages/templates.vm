@@ -1,0 +1,26 @@
+#parse("coralpres/header.vm")
+
+<h1>Templates</h1>
+
+<ul>
+	<li>Templates display parameters (variables) and elicit input from participants.</li>
+	<li>They "produce" a HTML document by combining the data for the participant with the template.</lli>
+    <li>Usually the page is encapsuled in a simple HTML &lt;form&gt; element.</li>
+    <li>All usual input elements can be used:
+    <ul> 
+    	<li>Text fields: <input type='text' name='textvar' value=''></li>
+    	<li>Checkboxes: <input type='checkbox' name='checkboxvar' value='1'></li>
+    	<li>Radiobuttons: <input type='radio' name='radiovar' value='1'> Yes <input type='radio' name='radiovar' value='2'> No </li>
+    </ul>
+    <li>Standard HTML tags and CSS formating can be applied.</li>
+</ul>
+
+
+<div class="contbutton">
+
+<p>
+	<input type='submit' name='continue' value='Continue'>
+</p>
+</div>
+
+#parse("coralpres/footer.vm")
