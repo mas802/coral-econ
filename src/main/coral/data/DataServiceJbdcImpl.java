@@ -300,6 +300,45 @@ public class DataServiceJbdcImpl implements DataService {
 		
 		return result;
 	}
+
+	
+	// SELECT
+	/* (non-Javadoc)
+	 * @see coral.data.DataService#retriveState(java.lang.String, long)
+	 */
+	@Override
+	public boolean retriveData(String collection, ExpData data) {
+		ExpData result = data;
+		boolean outcome = false;
+		
+		try {
+			Statement stat = conn.createStatement();
+			
+			ResultSet rs = stat.executeQuery("select * from states WHERE collection = '"+collection+" ORDER BY id';");
+			if (rs.next()) {
+				result._msgCounter = Integer.parseInt(rs.getString("round"));
+				result._stageCounter = Integer.parseInt(rs.getString("stage"));
+				result.template = rs.getString("template");
+				result.inmsg = rs.getString("msg");
+				outcome = true;
+			}
+			rs.close();
+			
+			rs = stat.executeQuery("select * from datas WHERE collection = '"+collection+"' ORDER BY name,id;");
+			while (rs.next()) {
+				result.put(rs.getString(3), rs.getString(4));
+				outcome = true;
+			}
+			rs.close();
+			
+			stat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return outcome;
+	}
+	
 	
 	// SELECT
 	/* (non-Javadoc)

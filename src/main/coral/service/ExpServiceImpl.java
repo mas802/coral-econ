@@ -180,32 +180,38 @@ public class ExpServiceImpl implements IExpService {
 
     public void addClient(Integer id) {
 
-	ExpData data = new ExpData();
-	data.put("id", id);
+	if (!dataMap.containsKey(id)) {
+	    
+	    ExpData data = new ExpData();
+	    data.put("id", id);
 
-	synchronized (dataMap) {
-	    int agent = dataMap.size();
-	    data.put("agent", agent);
-	    dataMap.put(id, data);
-	}
+	    synchronized (dataMap) {
+		int agent = dataMap.size();
+		data.put("agent", agent);
+		dataMap.put(id, data);
+	    }
 
-	// Initialise Randomness
-	int r = (int) (Math.random() * 99999);
+	    // Initialise Randomness
+	    int r = (int) (Math.random() * 99999);
 
-	data.put("randomseed", Integer.toString(r));
+	    data.put("randomseed", Integer.toString(r));
 
-	data.setNewpage(true);
+	    data.setNewpage(true);
 
-	ArrayList<Integer> l = new ArrayList<Integer>(stages.size());
-	for (int i = 0; i < stages.size(); i++) {
-	    l.add(-1);
-	}
+	    ArrayList<Integer> l = new ArrayList<Integer>(stages.size());
+	    for (int i = 0; i < stages.size(); i++) {
+		l.add(-1);
+	    }
 
-	clientstagecounter.put(id, l);
-	data._stageCounter = 0;
-
+	    clientstagecounter.put(id, l);
+	    data._stageCounter = 0;
+	    
+	    dataService.retriveData(id+"", data); 
+	    
+	} 
     }
 
+    
     @Override
     public void removeClient(Integer id) {
 	synchronized (dataMap) {
@@ -213,9 +219,6 @@ public class ExpServiceImpl implements IExpService {
 	}
     }
 
-    public void setOETData(Integer id, ExpData data) {
-	dataMap.put(id, data);
-    }
 
     public void evalTemplate(Integer id, String filename) {
 	ExpData data = dataMap.get(id);

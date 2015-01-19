@@ -45,6 +45,9 @@ public interface DataService {
 	public abstract ExpData retriveState(String collection, long id);
 
 	// SELECT
+	boolean retriveData(String collection, ExpData data);
+	
+	// SELECT
 	public abstract List<String[]> stageInfos();
 
 	// SELECT
@@ -59,5 +62,6 @@ public interface DataService {
 
 	// UTIL
 	public abstract Object[][] stageInfo();
+
 
 }
