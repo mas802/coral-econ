@@ -1,0 +1,4 @@
+template,loop,repeat,condition,validation,wait
+test1.vm,,,,,
+#include(include/stagesincluded.csv)
+test1.vm,,,,,
