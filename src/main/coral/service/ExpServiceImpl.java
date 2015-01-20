@@ -94,88 +94,10 @@ public class ExpServiceImpl implements IExpService {
 	ExpStage startstage = new ExpStage("_START");
 	stages.add(startstage);
 
-	ArrayList<String> lines = CoralUtils.readStages(new File(basepath,
-		stagefile));
+	List<ExpStage> lines = CoralUtils.readStages(new File(basepath,
+		stagefile), variants);
 
-	int counter = 0;
-	Map<String, Integer> loopMap = new HashMap<String, Integer>();
-
-	for (String line : lines) {
-
-	    counter++;
-	    logger.debug("add stage: 1 : " + line);
-	    String[] parts = line.split(",");
-	    int l = parts.length;
-
-	    String[] condition = new String[] {};
-	    String[] valid = new String[] {};
-	    String waitFor = "";
-	    int loopstage = 0;
-	    int looprepeat = 0;
-
-	    if (l > 1) {
-		try {
-		    logger.debug("add stage: 2 : " + Arrays.toString(parts));
-
-		    if (parts[1].startsWith(":")) {
-			loopMap.put(parts[1].substring(1), counter);
-		    }
-		    if (parts[1].endsWith(":")) {
-			loopstage = counter
-				- loopMap.get(parts[1].substring(0,
-					parts[1].length() - 1));
-		    } else {
-			loopstage = (parts[1] == null) ? 0 : Integer
-				.parseInt(CoralUtils.trimQuotes(parts[1]));
-		    }
-		    looprepeat = (parts[2] == null) ? 0 : Integer
-			    .parseInt(CoralUtils.trimQuotes(parts[2]));
-		} catch (NumberFormatException e) {
-		    // e.printStackTrace();
-		}
-	    }
-	    if (l > 3) {
-		logger.debug("add stage: condition : " + parts[3]);
-		condition = (parts[3].length() > 0) ? CoralUtils.trimQuotes(
-			parts[3]).split(";") : condition;
-	    }
-	    if (l > 4) {
-		logger.debug("add stage: validate : " + parts[4]);
-		valid = (parts[4].length() > 0) ? CoralUtils.trimQuotes(
-			parts[4]).split(";") : valid;
-	    }
-	    if (l > 5) {
-		logger.debug("add stage: waitFor : "
-			+ CoralUtils.trimQuotes(parts[5]));
-		waitFor = CoralUtils.trimQuotes(parts[5]);
-	    }
-
-	    String name = CoralUtils.trimQuotes(parts[0]);
-
-	    if (variants != null) {
-		int extpos = name.lastIndexOf(".");
-		if (extpos > 0) {
-		    String localised = name.substring(0, extpos + 1) + variants
-			    + name.substring(extpos);
-		    File test = new File(basepath, localised);
-		    logger.debug("check for variant: " + test.getAbsolutePath());
-		    if (test.exists()) {
-			name = localised;
-		    }
-		}
-	    }
-
-	    File test = new File(basepath, name);
-	    if (!test.exists() && !(parts.length > 3 && parts[3].equals("*"))) {
-		throw new RuntimeException("stage file " + name
-			+ " does not exist in path " + basepath + "  ---  "
-			+ test.getAbsolutePath());
-	    }
-	    ExpStage stage = new ExpStage(name, loopstage, looprepeat,
-		    condition, valid, waitFor);
-	    stages.add(stage);
-	    logger.debug("add stage: " + stage);
-	}
+	stages.addAll(lines);
     }
 
     public void addClient(Integer id) {
@@ -206,7 +128,9 @@ public class ExpServiceImpl implements IExpService {
 	    clientstagecounter.put(id, l);
 	    data._stageCounter = 0;
 	    
-	    dataService.retriveData(id+"", data); 
+	    if ( dataService != null ) {
+		dataService.retriveData(id+"", data);
+	    }
 	    
 	} 
     }

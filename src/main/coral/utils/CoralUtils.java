@@ -23,12 +23,16 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import coral.model.ExpStage;
 
 /**
  * Class with helper functions that cannot be found somewhere else.
@@ -114,10 +118,11 @@ public class CoralUtils {
      * 
      * @param file
      *            the stages file
+     * @param variants
      * @return ordered list of stages lines
      * 
      */
-    public static ArrayList<String> readStages(File file) {
+    public static List<ExpStage> readStages(File file, String variants) {
 	ArrayList<String> lines = new ArrayList<String>();
 
 	try {
@@ -125,16 +130,11 @@ public class CoralUtils {
 
 	    String line = br.readLine();
 	    logger.info("start add stage: " + line);
-	    line = br.readLine();
-
-	    while (line != null) {
-		if (!line.startsWith("#")) {
+	    
+	    while ((line = br.readLine()) != null) {
+		if (!line.startsWith("#") || line.startsWith("#include(")) {
 		    lines.add(line);
-		    line = br.readLine();
-		} else if (!line.startsWith("#include(")) {
-		    String filename = line.substring(9, line.length() - 10);
-		    logger.debug("include file: " + filename);
-		    lines.addAll(readStages(new File(filename)));
+		    logger.info(" add stage: " + line);
 		}
 	    }
 
@@ -146,6 +146,97 @@ public class CoralUtils {
 	    logger.error("I/O", e);
 	}
 
-	return lines;
+	logger.debug("lines read");
+
+	int counter = 0;
+	Map<String, Integer> loopMap = new HashMap<String, Integer>();
+
+	List<ExpStage> stages = new ArrayList<ExpStage>();
+
+	for (String line : lines) {
+	    if (line.startsWith("#include(")) {
+		    String filename = line.substring( line.indexOf('(')+1, line.lastIndexOf(')'));
+		    logger.debug("include file: " + filename);
+		    stages.addAll(readStages(new File(file.getParentFile(),filename), variants));
+	    } else {
+
+		counter++;
+
+		String[] parts = line.split(",");
+		int l = parts.length;
+
+		String[] condition = new String[] {};
+		String[] valid = new String[] {};
+
+		String waitFor = "";
+		int loopstage = 0;
+		int looprepeat = 0;
+
+		if (l > 1) {
+		    try {
+			logger.debug("add stage: 2 : " + Arrays.toString(parts));
+
+			if (parts[1].startsWith(":")) {
+			    loopMap.put(parts[1].substring(1), counter);
+			}
+			if (parts[1].endsWith(":")) {
+			    loopstage = counter
+				    - loopMap.get(parts[1].substring(0,
+					    parts[1].length() - 1));
+			} else {
+			    loopstage = (parts[1] == null) ? 0 : Integer
+				    .parseInt(CoralUtils.trimQuotes(parts[1]));
+			}
+			looprepeat = (parts[2] == null) ? 0 : Integer
+				.parseInt(CoralUtils.trimQuotes(parts[2]));
+		    } catch (NumberFormatException e) {
+			// e.printStackTrace();
+		    }
+		}
+		if (l > 3) {
+		    logger.debug("add stage: condition : " + parts[3]);
+		    condition = (parts[3].length() > 0) ? CoralUtils
+			    .trimQuotes(parts[3]).split(";") : condition;
+		}
+		if (l > 4) {
+		    logger.debug("add stage: validate : " + parts[4]);
+		    valid = (parts[4].length() > 0) ? CoralUtils.trimQuotes(
+			    parts[4]).split(";") : valid;
+		}
+		if (l > 5) {
+		    logger.debug("add stage: waitFor : "
+			    + CoralUtils.trimQuotes(parts[5]));
+		    waitFor = CoralUtils.trimQuotes(parts[5]);
+		}
+
+		String name = CoralUtils.trimQuotes(parts[0]);
+
+		if (variants != null) {
+		    int extpos = name.lastIndexOf(".");
+		    if (extpos > 0) {
+			String localised = name.substring(0, extpos + 1)
+				+ variants + name.substring(extpos);
+			File test = new File(file.getParent(), localised);
+			logger.debug("check for variant: "
+				+ test.getAbsolutePath());
+			if (test.exists()) {
+			    name = localised;
+			}
+		    }
+		}
+
+		File test = new File(file.getParent(), name);
+		if (!test.exists()
+			&& !(parts.length > 3 && parts[3].equals("*"))) {
+		    throw new RuntimeException("stage file " + name
+			    + " does not exist in path " + file.getParent()
+			    + "  ---  " + test.getAbsolutePath());
+		}
+		ExpStage stage = new ExpStage(name, loopstage, looprepeat,
+			condition, valid, waitFor);
+		stages.add(stage);
+	    }
+	}
+	return stages;
     }
 }
