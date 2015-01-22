@@ -16,7 +16,7 @@ public class TestReadStagesFile {
     @Test
     public void testReadFlatStagesFile() {
 	
-	List<ExpStage> stages = CoralUtils.readStages(new File("test/main/stagesflat.csv"), null);
+	List<ExpStage> stages = CoralUtils.readStages(new File("test/main/stagesflat.csv"), null,  new File(""));
 	
 	Assert.assertEquals( 5, stages.size());
 	
@@ -26,7 +26,7 @@ public class TestReadStagesFile {
     @Test
     public void testReadIncludeStagesFile() {
 	
-	List<ExpStage> stages = CoralUtils.readStages(new File("test/main/stagesinclude.csv"), null);
+	List<ExpStage> stages = CoralUtils.readStages(new File("test/main/stagesinclude.csv"), null, new File(""));
 	
 	Assert.assertEquals( 5, stages.size());
 	

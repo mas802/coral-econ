@@ -122,7 +122,8 @@ public class CoralUtils {
      * @return ordered list of stages lines
      * 
      */
-    public static List<ExpStage> readStages(File file, String variants) {
+    public static List<ExpStage> readStages(File file, String variants,
+	    File templateFolder) {
 	ArrayList<String> lines = new ArrayList<String>();
 
 	try {
@@ -130,7 +131,7 @@ public class CoralUtils {
 
 	    String line = br.readLine();
 	    logger.info("start add stage: " + line);
-	    
+
 	    while ((line = br.readLine()) != null) {
 		if (!line.startsWith("#") || line.startsWith("#include(")) {
 		    lines.add(line);
@@ -155,9 +156,11 @@ public class CoralUtils {
 
 	for (String line : lines) {
 	    if (line.startsWith("#include(")) {
-		    String filename = line.substring( line.indexOf('(')+1, line.lastIndexOf(')'));
-		    logger.debug("include file: " + filename);
-		    stages.addAll(readStages(new File(file.getParentFile(),filename), variants));
+		String filename = line.substring(line.indexOf('(') + 1,
+			line.lastIndexOf(')'));
+		logger.debug("include file: " + filename);
+		stages.addAll(readStages(new File(file.getParentFile(),
+			filename), variants, templateFolder));
 	    } else {
 
 		counter++;
@@ -225,16 +228,26 @@ public class CoralUtils {
 		    }
 		}
 
+		// only add the file ref if the file exists, otherwise just 
+		// add the name for an error to show when running
+		// TODO this should trigger some sort of alarm
 		File test = new File(file.getParent(), name);
 		if (!test.exists()
 			&& !(parts.length > 3 && parts[3].equals("*"))) {
-		    throw new RuntimeException("stage file " + name
+		    logger.warn("stage file " + name
 			    + " does not exist in path " + file.getParent()
 			    + "  ---  " + test.getAbsolutePath());
+		    
+		    ExpStage stage = new ExpStage(name + " (does not exist)", loopstage,
+			    looprepeat, condition, valid, waitFor);
+		    stages.add(stage);
+		} else {
+		    String templateRef = test.getAbsolutePath().replace(
+			    templateFolder.getAbsolutePath(), "");
+		    ExpStage stage = new ExpStage(templateRef, loopstage,
+			    looprepeat, condition, valid, waitFor);
+		    stages.add(stage);
 		}
-		ExpStage stage = new ExpStage(name, loopstage, looprepeat,
-			condition, valid, waitFor);
-		stages.add(stage);
 	    }
 	}
 	return stages;

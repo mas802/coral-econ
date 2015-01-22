@@ -95,7 +95,7 @@ public class ExpServiceImpl implements IExpService {
 	stages.add(startstage);
 
 	List<ExpStage> lines = CoralUtils.readStages(new File(basepath,
-		stagefile), variants);
+		stagefile), variants, new File(basepath));
 
 	stages.addAll(lines);
     }
