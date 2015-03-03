@@ -50,21 +50,21 @@ public class CoralReRun {
 
         Properties p = new Properties();
 
-        File DIR = new File("~/Dropbox/EXPERIMENTS/snapPond (1)/");
+        File DIR = new File("~/Dropbox/EXPERIMENTS/snapSurvey/");
 
         // p.setProperty("coral.exp.stages", "test/testwait.csv");
         p.setProperty("exp.basepath",
-                "/home/schaffne/Dropbox/EXPERIMENTS/snapPond (1)/");
-        p.setProperty("exp.stagesfile", "stages_color.csv");
+                "/home/schaffne/Dropbox/EXPERIMENTS/snapSurvey/");
+        p.setProperty("exp.stagesfile", "stages_goget.csv");
         p.setProperty("coral.db.mode", "mem");
 
         testHandler.init(p, null, null);
 
         
         File file = new File(
-                "/home/schaffne/Dropbox/EXPERIMENTS/snapPond (1)/experimentlogfile/snapPond"+no+".log");
+                "/home/schaffne/Desktop/snaplog/coral.log");
 
-        int N = 30;
+        int N = 200;
 
         clients = new ArrayList<ArrayBlockingQueue<Message>>(N);
         messages = new ArrayList<ArrayList<String>>(N);
@@ -168,7 +168,7 @@ public class CoralReRun {
         }
         System.out.println(" end " + no);
 
-        testHandler.process(new Message("__SERVER/?export=/home/schaffne/Dropbox/EXPERIMENTS/snapPond (1)/experimentRawfile/RERUN2_snapPond"+no+".raw"),
+        testHandler.process(new Message("__SERVER/?export=/home/schaffne/Desktop/snaplog/coral.raw"),
                 clients.get(0));
         
         System.out.println(" done " + no);

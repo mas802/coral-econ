@@ -87,6 +87,8 @@ public class ExpServiceImpl implements IExpService {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
+	
+	logger.info( "exp service started: " + this );	
     }
 
     public void init(String basepath, String stagefile, String variants) {

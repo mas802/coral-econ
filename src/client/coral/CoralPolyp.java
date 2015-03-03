@@ -68,7 +68,7 @@ public class CoralPolyp {
 
     }
 
-    public static void makeClient(Properties generalProp) {
+    public static void makeClient( Properties generalProp ) {
 
 	// SETUP shell and add to properties
 	Display display = Display.getDefault();
@@ -76,7 +76,6 @@ public class CoralPolyp {
 	if (generalProp.getProperty("coral.polyp.ontop", "true").equals("true")) {
 	    shellprop = SWT.NO_TRIM | SWT.ON_TOP;
 	} else if (generalProp.getProperty("coral.polyp.fullscreen", "true").equals("true")) {
-		System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 	    shellprop = SWT.NO_TRIM;
 	}
 	Shell shell = new Shell(display, shellprop);
@@ -84,6 +83,9 @@ public class CoralPolyp {
 	int noclients = Integer.parseInt(generalProp.getProperty(
 		"coral.polyp.number", "1"));
 
+	/*
+	 * setup the shell
+	 */
 	if (noclients > 1) {
 	    GridLayout gridLayout = new GridLayout();
 	    gridLayout.numColumns = (int) Math.round(Math.ceil(Math
@@ -111,6 +113,9 @@ public class CoralPolyp {
 
 	generalProp.put("shell", shell);
 
+	/*
+	 * setup the resource directory
+	 */
 	if (!generalProp.containsKey("coral.polyp.res")) {
 	    try {
 		File f = File.createTempFile("coral", "res");
@@ -123,11 +128,29 @@ public class CoralPolyp {
 	    }
 	}
 
+	/*
+	 * start client(s)
+	 */
 	for (int i = 0; i < noclients; i++) {
 
 	    Properties prop = new Properties();
 
-	    prop.putAll(generalProp);
+	    /* 
+	     * copy over client configuration
+	     */
+	    for ( Object key: generalProp.keySet() ) {
+		if ( key.toString().startsWith("coral.polyp") || key.toString().equals("shell")  || key.toString().equals("coral.host")  || key.toString().equals("coral.port") ) {
+		    prop.put(key, generalProp.get(key));
+		}
+	    }
+	    
+	    if ( !prop.containsKey("coral.host") ) {
+		prop.setProperty("coral.host", "localhost" );
+	    }
+
+	    if ( !prop.containsKey("coral.port") ) {
+		prop.setProperty("coral.port", generalProp.getProperty( "any.port", "43802") );
+	    }
 
 	    if (i > 0) {
 		prop.put("coral.polyp.res",
@@ -145,10 +168,8 @@ public class CoralPolyp {
 	    sss.init(prop, s.getNamedCon().get("loop").getOutQueue(), null);
 	    s.getServableMap().put("scrn", sss);
 	    
-	    
-	    s.connect("host", prop.getProperty("coral.host", "localhost"),
-		    Integer.parseInt(prop.getProperty("coral.port", "43802")));
-
+	    s.connect("host", prop.getProperty("coral.host"),
+		    Integer.parseInt(prop.getProperty("coral.port")));
 	    
 	    new Thread(new Runnable() {
 		@Override
@@ -156,7 +177,7 @@ public class CoralPolyp {
 		    s.serve();
 		}
 	    }).start();
-        
+	    
 	    
 	    new Thread("vset init") {
 		public void run() {
@@ -180,5 +201,4 @@ public class CoralPolyp {
 	    }
 	}
     }
-
 }

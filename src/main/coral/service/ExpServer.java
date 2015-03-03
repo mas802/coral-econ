@@ -100,10 +100,10 @@ public class ExpServer {
 	    Map<Integer, ExpData> data = service.getAllData();
 
 	    Map<String, Object> adds = new HashMap<String, Object>();
-	    // adds.put("_agentdata", data);
+	    adds.put("_agentdata", data);
 	    adds.put("_stages", service.getStages());
 	    adds.put("_query", args);
-	    adds.put("_clients", ch.getClientInfoMapList());
+	    // adds.put("_clients", ch.getClientInfoMapList());
 
 	    String content = ExpTemplateUtil.evalVM(cmd, data, null, service,
 		    adds);

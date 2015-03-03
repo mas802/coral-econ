@@ -82,10 +82,10 @@ public class ExpServable implements Servable, ExpHandler {
 	Integer id = getClientId(outQueue);
 	String c = cmd.getFullContent();
 
-	logger.info("run cmd on server: ###" + c + "### to " + id);
-
 	c.replaceAll("/__", "__");
 
+	logger.info("run cmd on server: ####" + c + "#### to " + id);
+	
 	if (c.startsWith("__RES")) {
 	    logger.info("send resources");
 	    sendResources(outQueue);

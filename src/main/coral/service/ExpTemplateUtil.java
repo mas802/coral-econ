@@ -44,6 +44,8 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.MathTool;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 import coral.model.ExpData;
 import coral.utils.CoralUtils;
@@ -56,7 +58,7 @@ import coral.utils.CoralUtils;
  */
 public class ExpTemplateUtil {
 
-	static ScriptEngineManager m = new ScriptEngineManager();
+	// static ScriptEngineManager m = new ScriptEngineManager();
 
 	static protected final Log logger = LogFactory
 			.getLog(ExpTemplateUtil.class);
@@ -105,7 +107,7 @@ public class ExpTemplateUtil {
 		} else if (template.endsWith(".html") || template.endsWith(".htm")) {
 			result = evalVM(template, data, error, service);
 		} else if (template.endsWith(".js")) {
-			result = evalScript(template, data, error, service);
+			result = evalScriptR(template, data, error, service);
 		} else if (template.endsWith(".ztt")) {
 			result = runZtree(template, data, error, service);
 		} else {
@@ -201,6 +203,8 @@ public class ExpTemplateUtil {
 
 		return writer.toString();
 	}
+	
+	/*
 
 	// javascript evaluation
 	public String evalScript(String scriptname, ExpData data, ErrorFlag error,
@@ -333,6 +337,7 @@ public class ExpTemplateUtil {
 		return null;
 	}
 
+	
 	// evaluate simple javascript expression with data
 	public static Object evalExp(String exp, Map<String, Object> data) {
 
@@ -374,6 +379,191 @@ public class ExpTemplateUtil {
 			if (logger.isDebugEnabled())
 				logger.debug("JS OBJECT: " + o);
 		} catch (ScriptException e) {
+			logger.error("script failed", e);
+		}
+
+		return o;
+	}
+	*/
+	
+	
+	// javascript evaluation
+	public String evalScriptR(String scriptname, ExpData data, ErrorFlag error,
+			ExpServiceImpl service) {
+
+		// Map<String, String> newOrChangedMap = new LinkedHashMap<String, sss
+		// String>();
+
+		// ScriptEngine jsEngine = m.getEngineByName("js");
+		// ScriptContext context = new SimpleScriptContext();
+		
+		Context context = Context.enter();
+		
+		Scriptable scope = context.initStandardObjects();
+
+		// context.setAttribute("data", data, ScriptContext.ENGINE_SCOPE);
+		// context.setAttribute("error", error, ScriptContext.ENGINE_SCOPE);
+
+		for (Map.Entry<String, Object> e : data.entrySet()) {
+			if (e != null && e.getKey() != null
+					&& !e.getKey().toString().equals("")) {
+				Object value = data.get(e.getKey());
+
+				if (logger.isDebugEnabled()) {
+					logger.debug("entered value: " + e.getKey() + " == "
+							+ value + " \t\t | " + value.getClass());
+				}
+				scope.put(e.getKey(), scope, value);
+			}
+		}
+
+		if (service != null) {
+			scope.put("agents", scope, service.getAllData().values().toArray());
+		}
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File(
+					basepath + scriptname)));
+
+			Object o = context.evaluateReader(scope, br, "coral", 1, null );
+			if (logger.isDebugEnabled())
+				logger.debug("JS OBJECT: " + o);
+
+			for (Object keyOb: scope.getIds()) {
+			    String key = keyOb.toString();
+			    Object value = scope.get(key.toString(), scope);
+			    
+			    
+			    System.out.println( "KEYS: " + key + " value: " + value );
+			    
+			    
+				// TODO dirty way to unwrap NativeJavaObjects
+				if (!(value instanceof Number) && !(value instanceof String)) {
+					try {
+						Method m = value.getClass().getMethod("unwrap");
+						value = m.invoke(value);
+					} catch (SecurityException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (NoSuchMethodException e1) {
+						// TODO Auto-generated catch block
+						// e1.printStackTrace();
+					} catch (IllegalArgumentException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (IllegalAccessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InvocationTargetException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+
+				if (value instanceof Number || value instanceof String) {
+					if (!data.containsKey(key)
+							|| data.get(key) == null
+							|| !data.get(key).toString()
+									.equals(value.toString())) {
+						data.put(key, value);
+						// newOrChangedMap.put(key, value.toString());
+						if (logger.isDebugEnabled()) {
+							logger.debug("SCRIPTED VALUE: " + key
+									+ " == " + value.toString() + " \t\t | "
+									+ value.getClass());
+						}
+					} else {
+						if (logger.isDebugEnabled()) {
+							logger.debug("retained: " + key + " == "
+									+ value.toString());
+						}
+					}
+				} else if (value instanceof List<?>) {
+					Object[] array = ((List<?>) value).toArray();
+
+					if (!data.containsKey(key)
+							|| data.get(key) == null
+							|| !data.get(key).toString()
+									.equals(Arrays.asList(array).toString())) {
+						data.put(key, array);
+						// newOrChangedMap.put(key, array);
+						if (logger.isDebugEnabled()) {
+							logger.debug("SCRIPTED ARRAY: " + key
+									+ " == " + value.toString() + " \t\t | "
+									+ value.getClass());
+						}
+					} else {
+						if (logger.isDebugEnabled()) {
+							logger.debug("ARRAY retained: " + key
+									+ " == " + value.toString());
+						}
+					}
+
+					logger.debug("ARRAY: " + key + " == "
+							+ value.toString() + " \t\t | "
+							+ value.getClass());
+				} else {
+					logger.debug("NONVALUE: " + key + " == "
+							+ value.toString() + " \t\t | "
+							+ value.getClass());
+				}
+				// context.removeAttribute(key,
+				// ScriptContext.ENGINE_SCOPE);
+
+			}
+
+		} catch (FileNotFoundException e1) {
+			logger.error("File Not Found Exception ", e1);
+			return errorPage(scriptname + " " + e1.getMessage());
+		} catch (IOException e1) {
+		    // TODO Auto-generated catch block
+		    e1.printStackTrace();
+		} 
+
+		return null;
+	}
+
+	
+	// evaluate simple javascript expression with data
+	public static Object evalExp(String exp, Map<String, Object> data) {
+
+		Context context = Context.enter();
+		Scriptable scope = context.initStandardObjects();
+
+		for (Map.Entry<String, Object> e : data.entrySet()) {
+			if (e != null && e.getKey() != null
+					&& !e.getKey().toString().equals("")) {
+				Object value = e.getValue();
+
+				try {
+					try {
+						value = Integer.parseInt(value.toString());
+					} catch (NumberFormatException ex) {
+						double v = Double.parseDouble(value.toString());
+						if (Math.round(v) == v) {
+							value = Math.round(v);
+						} else {
+							value = v;
+						}
+					}
+				} catch (NumberFormatException ex) {
+					// value = value;
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug("entered value: " + e.getKey() + " == "
+							+ e.getValue().toString() + " \t\t | "
+							+ e.getClass());
+				}
+				scope.put(e.getKey(), scope, value);
+			}
+		}
+
+		Object o = null;
+		try {
+			o = context.evaluateString(scope, exp, "expression", 1, null);
+			if (logger.isDebugEnabled())
+				logger.debug("JS OBJECT: " + o);
+		} catch (Exception e) {
 			logger.error("script failed", e);
 		}
 

@@ -116,9 +116,9 @@ public class WebServable implements Servable {
 		out.writeBytes("Expires: -1\n");
 		out.writeBytes("Pragma: no-cache\n");
 		out.writeBytes("Vary: *\n");
+		out.writeBytes("Content-Type: text/html\n");
 		out.writeBytes("Set-Cookie: CORALID=" + id + "; path=/\n; HttpOnly");
 		// out.writeBytes("Transfer-Encoding: chunked\n");
-		// out.writeBytes("Content-Type: text/html\n\n");
 
 		service.getNamedCon().get("host").getOutQueue()
 				.add(new Message("exp://host" + msg));
