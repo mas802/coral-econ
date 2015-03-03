@@ -15,6 +15,7 @@
  */
 package coral;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.Properties;
 
 import any.IConnection;
 import any.Linker;
+import coral.test.CoralLogRun;
 /*
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -53,6 +55,23 @@ public class CoralHead {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			} else if (a.endsWith(".log")) {
+			    CoralLogRun lr = new CoralLogRun();
+			    
+			    if (a.length() == 1) {
+				try {
+					generalProp.load(new FileInputStream("coral.properties"));
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			    }
+			    
+			    lr.init(new File(generalProp.getProperty( "exp.basepath", "." )), generalProp.getProperty( "exp.stagesfile", "stages.csv" ), a, "rerun.raw");
+			    return;
 			}
 		}
 
