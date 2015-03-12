@@ -29,7 +29,12 @@ public class CoralStart {
 			args = new String[] { "coral.properties" };
 		}
 
-		CoralHead.build(args);
+		try {
+		    CoralHead.build(args);
+		} catch (Throwable e) {
+			lastresort("Problem starting Coral:" , e);
+			e.printStackTrace();
+		}
 	}
 
 	private static void loadSwtJar(String swtPath) {
@@ -61,7 +66,16 @@ public class CoralStart {
 		} catch (Exception e) {
 			System.out.println("Unable to add the swt jar to the class path: "
 					+ swtPath);
+			lastresort("Unable to add the swt jar to the class path: "
+				+ swtPath + " " , e);
 			e.printStackTrace();
 		}
+	}
+	
+	private static void lastresort(String msg, Throwable e){
+	    System.out.println( msg );
+	    String s = org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace(e);
+	    System.out.println( s );
+	    javax.swing.JOptionPane.showMessageDialog(null, msg + "\n" + s);
 	}
 }

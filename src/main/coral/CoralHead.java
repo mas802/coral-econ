@@ -50,9 +50,11 @@ public class CoralHead {
 					generalProp.load(new FileInputStream(a));
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
+					lastresort(e.getMessage());
 					e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
+					lastresort(e.getMessage());
 					e.printStackTrace();
 				}
 			} else if (a.endsWith(".log")) {
@@ -63,9 +65,11 @@ public class CoralHead {
 					generalProp.load(new FileInputStream("coral.properties"));
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
+					lastresort(e.getMessage());
 					e.printStackTrace();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
+					lastresort(e.getMessage());
 					e.printStackTrace();
 				}
 			    }
@@ -101,6 +105,7 @@ public class CoralHead {
 				new ExpWebServer(hoststr, webpath, webhost, webport, Integer.parseInt(generalProp.getProperty( "any.port", "43802")));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				lastresort(e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -221,8 +226,15 @@ public class CoralHead {
 		} catch (Exception e) {
 			System.out.println("Unable to add the swt jar to the class path: "
 					+ swtPath);
+			lastresort(e.getMessage());
 			e.printStackTrace();
 		}
 	}
 	*/
+	
+	
+	private static void lastresort(String s){
+	    System.out.println( s );
+	    javax.swing.JOptionPane.showMessageDialog(null, s);
+	}
 }
