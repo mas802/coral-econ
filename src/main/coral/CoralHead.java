@@ -23,7 +23,8 @@ import java.util.Properties;
 
 import any.IConnection;
 import any.Linker;
-import coral.test.CoralLogRun;
+// import coral.test.CoralLogRun;
+
 /*
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -57,7 +58,7 @@ public class CoralHead {
 					lastresort(e.getMessage());
 					e.printStackTrace();
 				}
-			} else if (a.endsWith(".log")) {
+/*			} else if (a.endsWith(".log")) {
 			    CoralLogRun lr = new CoralLogRun();
 			    
 			    if (a.length() == 1) {
@@ -76,7 +77,9 @@ public class CoralHead {
 			    
 			    lr.init(new File(generalProp.getProperty( "exp.basepath", "." )), generalProp.getProperty( "exp.stagesfile", "stages.csv" ), a, "rerun.raw");
 			    return;
+			*/
 			}
+			
 		}
 
 		/*
