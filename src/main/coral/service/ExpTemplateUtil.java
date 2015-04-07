@@ -92,6 +92,7 @@ public class ExpTemplateUtil {
 
 		} catch (Exception e1) {
 			logger.error("Error in velocity setup", e1);
+			throw new RuntimeException(e1);
 		}
 
 	}

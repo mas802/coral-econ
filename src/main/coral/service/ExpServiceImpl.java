@@ -217,7 +217,7 @@ public class ExpServiceImpl implements IExpService {
 	boolean noloop = args.containsKey("noloop");
 	boolean skipederror = args.containsKey("skipederror");
 
-	ErrorFlag error = new ErrorFlag(skiperror || reload);
+	ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
 
 	ExpStage enterstage = stages.get(data.stageCounter());
 	boolean isvalid;
@@ -348,6 +348,9 @@ public class ExpServiceImpl implements IExpService {
 	    data.setNewpage(true);
 	    String append = (skiperror || skipederror) ? "&skipederror=true"
 		    : "";
+	    if ( skipback ) {
+		append += "&skipback=true";
+	    }
 	    process(id, "?nextmsg=true" + append + "");
 	} else {
 	    ch.broadcast(id, output);
