@@ -3,8 +3,8 @@
   <groupId>code.google.coral-econ</groupId>
   <version>0.9.1-beta.snapshot</version>
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>test</testSourceDirectory>
+    <sourceDirectory>src/any-src, src/main, src/client</sourceDirectory>
+    <testSourceDirectory>test/main</testSourceDirectory>
     <resources>
       <resource>
         <directory>src</directory>
