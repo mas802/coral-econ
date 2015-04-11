@@ -108,7 +108,7 @@ public class ExpServable implements Servable, ExpHandler {
 
                 service.process(id, "?refreshid=" + id);
             } else {
-                logger.info("START new client with no this id");
+                logger.info("START new client with this id");
                 clients.put(id, outQueue);
                 service.addClient(id);
                 if (useScreenwriter) {

@@ -212,6 +212,12 @@ public class ExpServiceImpl implements IExpService {
         boolean noloop = args.containsKey("noloop");
         boolean skipederror = args.containsKey("skipederror");
         
+        // TODO this is a quick fix to allow new clients with refresh
+        if ( reload && data._stageCounter==0 ) {
+            reload = false;
+        }
+        
+        
         boolean isvalid = false;
         
         ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
