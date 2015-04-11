@@ -201,9 +201,7 @@ public class ExpServiceImpl implements IExpService {
         data._msgCounter++;
         dataService.saveOETData(Integer.toString(id), data);
 
-        // convert url entry to data
         Map<String, String> args = CoralUtils.urlToMap(arg);
-        data.putAll(args);
 
         // VALIDATION and debug/flow messages
         ErrorFlag condition = new ErrorFlag(false);
@@ -213,15 +211,40 @@ public class ExpServiceImpl implements IExpService {
         boolean skipback = args.containsKey("skipback");
         boolean noloop = args.containsKey("noloop");
         boolean skipederror = args.containsKey("skipederror");
-
+        
+        boolean isvalid = false;
+        
         ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
 
         ExpStage enterstage = stages.get(data.stageCounter());
-        boolean isvalid;
+       
+        
+        data.putAll(args);
+        
         if (!reload) {
             logger.info("validate stage  " + data.stageCounter() + " -> "
-                    + enterstage.getTemplate() + "");
+                    + enterstage.getTemplate() + " hash: " + enterstage.hashCode() );
             isvalid = error.validateFormated(data, enterstage.getValidate());
+ 
+            /*
+             * validate stageId if provided
+             */
+            if ( args.containsKey("_stageIdCheck") && !args.get("_stageIdCheck").equals("")) { // TODO or if this is enforced?
+                String stageId = data.getString("_stageId");
+                String stageIdCheck = args.get("_stageIdCheck");
+                if ( !stageId.equals(stageIdCheck)) {
+                    isvalid = false;
+                    // todo, check adverse effects
+                    skipback = false;
+                    error.put("_stageId", "invalid");
+                }
+                data.put( "_stageIdCheck", "" );
+                
+                if ( logger.isDebugEnabled() ) {
+                    logger.debug("validate stage " + enterstage.getTemplate() + " with id " + stageId + " against " + stageIdCheck);
+                }
+            } 
+
         } else {
             isvalid = true;
         }
@@ -321,9 +344,10 @@ public class ExpServiceImpl implements IExpService {
             }
         } else {
             logger.info("evaluate stage " + data.stageCounter() + " -> "
-                    + thisstage.getTemplate() + "");
+                    + thisstage.getTemplate() + " hash: " + thisstage.hashCode() );
 
             data.put("template", thisstage.getTemplate());
+            data.put("_stageId", thisstage.hashCode() + "" + (int) (Math.random() * 99999));
             output = baseService.eval(thisstage.getTemplate(), data, error,
                     this);
 

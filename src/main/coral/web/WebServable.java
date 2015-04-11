@@ -112,8 +112,8 @@ public class WebServable implements Servable {
 		this.out = out;
 
 		out.writeBytes("HTTP/1.1 200 OK\n");
-		out.writeBytes("Cache-Control: no-cache, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0\n");
-		out.writeBytes("Expires: -1\n");
+		out.writeBytes("Cache-Control: max-age=0, no-cache, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0\n");
+        out.writeBytes("Expires: Mon, 26 Jul 1997 05:00:00 GMT\n");
 		out.writeBytes("Pragma: no-cache\n");
 		out.writeBytes("Vary: *\n");
 		out.writeBytes("Content-Type: text/html\n");
