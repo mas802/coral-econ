@@ -66,310 +66,307 @@ public class ExpServiceImpl implements IExpService {
     private String _coralhost;
 
     public ExpData getData(Integer id) {
-	return dataMap.get(id);
+        return dataMap.get(id);
     }
 
     public List<ExpStage> getStages() {
-	return stages;
+        return stages;
     }
 
     // private OETData logic = data;
 
     public ExpServiceImpl(ExpHandler clientHandler, String basepath,
-	    DataService ds) {
-	this._coralhost = CoralUtils.getHostStr();
-	this.dataService = ds;
-	this.ch = clientHandler;
-	this.baseService = new ExpTemplateUtil(basepath);
-	try {
-	    this.logwriter = new FileWriter(new File("coral.log"), true);
-	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
-	
-	logger.info( "exp service started: " + this );	
+            DataService ds) {
+        this._coralhost = CoralUtils.getHostStr();
+        this.dataService = ds;
+        this.ch = clientHandler;
+        this.baseService = new ExpTemplateUtil(basepath);
+        try {
+            this.logwriter = new FileWriter(new File("coral.log"), true);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        logger.info("exp service started: " + this);
     }
 
     public void init(String basepath, String stagefile, String variants) {
 
-	ExpStage startstage = new ExpStage("_START");
-	stages.add(startstage);
+        ExpStage startstage = new ExpStage("_START");
+        stages.add(startstage);
 
-	List<ExpStage> lines = CoralUtils.readStages(new File(basepath,
-		stagefile), variants, new File(basepath));
+        List<ExpStage> lines = CoralUtils.readStages(new File(basepath,
+                stagefile), variants, new File(basepath));
 
-	stages.addAll(lines);
+        stages.addAll(lines);
     }
 
     public void addClient(Integer id) {
 
-	if (!dataMap.containsKey(id)) {
-	    
-	    ExpData data = new ExpData();
-	    data.put("id", id);
+        if (!dataMap.containsKey(id)) {
 
-	    synchronized (dataMap) {
-		int agent = dataMap.size();
-		data.put("agent", agent);
-		dataMap.put(id, data);
-	    }
+            ExpData data = new ExpData();
+            data.put("id", id);
 
-	    // Initialise Randomness
-	    int r = (int) (Math.random() * 99999);
+            synchronized (dataMap) {
+                int agent = dataMap.size();
+                data.put("agent", agent);
+                dataMap.put(id, data);
+            }
 
-	    data.put("randomseed", Integer.toString(r));
+            // Initialise Randomness
+            int r = (int) (Math.random() * 99999);
 
-	    data.setNewpage(true);
+            data.put("randomseed", Integer.toString(r));
 
-	    ArrayList<Integer> l = new ArrayList<Integer>(stages.size());
-	    for (int i = 0; i < stages.size(); i++) {
-		l.add(-1);
-	    }
+            data.setNewpage(true);
 
-	    clientstagecounter.put(id, l);
-	    data._stageCounter = 0;
-	    
-	    if ( dataService != null ) {
-		dataService.retriveData(id+"", data);
-	    }
-	    
-	} 
+            ArrayList<Integer> l = new ArrayList<Integer>(stages.size());
+            for (int i = 0; i < stages.size(); i++) {
+                l.add(-1);
+            }
+
+            clientstagecounter.put(id, l);
+            data._stageCounter = 0;
+
+            if (dataService != null) {
+                dataService.retriveData(id + "", data);
+            }
+        }
     }
 
-    
     @Override
     public void removeClient(Integer id) {
-	synchronized (dataMap) {
-	    dataMap.remove(id);
-	}
+        synchronized (dataMap) {
+            dataMap.remove(id);
+        }
     }
 
-
     public void evalTemplate(Integer id, String filename) {
-	ExpData data = dataMap.get(id);
-	logger.info("enter process template " + id + " with filename: "
-		+ filename);
+        ExpData data = dataMap.get(id);
+        logger.info("enter process template " + id + " with filename: "
+                + filename);
 
-	String now = Long.toString(System.currentTimeMillis());
-	String nownano = Long.toString(System.nanoTime());
-	try {
-	    String out = id + "::" + now + "::" + nownano + "::template="
-		    + filename + "\n";
-	    logwriter.write(out);
-	    logwriter.flush();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        String now = Long.toString(System.currentTimeMillis());
+        String nownano = Long.toString(System.nanoTime());
+        try {
+            String out = id + "::" + now + "::" + nownano + "::template="
+                    + filename + "\n";
+            logwriter.write(out);
+            logwriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	ErrorFlag error = new ErrorFlag(true);
+        ErrorFlag error = new ErrorFlag(true);
 
-	// EVALUATE SCRIPT
-	String output = null;
-	logger.info("evaluate template " + filename);
-	output = baseService.eval(filename, data, error, this);
-	ch.broadcast(id, output);
+        // EVALUATE SCRIPT
+        String output = null;
+        logger.info("evaluate template " + filename);
+        output = baseService.eval(filename, data, error, this);
+        ch.broadcast(id, output);
     }
 
     /**
      * Implementation of the core loop as described.
      */
     public synchronized void process(Integer id, String arg) {
-	// TODO, get an appropriate data objects (no reuse!)
-	ExpData data = dataMap.get(id);
-	logger.info("enter process client " + id + " with args: " + arg
-		+ " stage: " + data._stageCounter);
+        // TODO, get an appropriate data objects (no reuse!)
+        ExpData data = dataMap.get(id);
+        logger.info("enter process client " + id + " with args: " + arg
+                + " stage: " + data._stageCounter);
 
-	// set start conditions if requested might be obsolete
-	if (arg.equals(IExpService.START_KEY)) {
-	    data._msgCounter = 0;
-	    data._stageCounter = 0;
-	}
-	data.inmsg = arg;
+        // set start conditions if requested might be obsolete
+        if (arg.equals(IExpService.START_KEY)) {
+            data._msgCounter = 0;
+            data._stageCounter = 0;
+        }
+        data.inmsg = arg;
 
-	String now = Long.toString(System.currentTimeMillis());
-	String nownano = Long.toString(System.nanoTime());
-	try {
-	    String out = id + "::" + now + "::" + nownano + "::" + arg + "\n";
-	    logwriter.write(out);
-	    logwriter.flush();
-	} catch (IOException e) {
-	    e.printStackTrace();
-	}
+        String now = Long.toString(System.currentTimeMillis());
+        String nownano = Long.toString(System.nanoTime());
+        try {
+            String out = id + "::" + now + "::" + nownano + "::" + arg + "\n";
+            logwriter.write(out);
+            logwriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-	// SAVE BEFORE INCOMING DATA
-	data.put("_now", now);
-	data.put("_nownano", nownano);
-	data.put("_mode", "enter");
-	data._msgCounter++;
-	dataService.saveOETData(Integer.toString(id), data);
+        // SAVE BEFORE INCOMING DATA
+        data.put("_now", now);
+        data.put("_nownano", nownano);
+        data.put("_mode", "enter");
+        data._msgCounter++;
+        dataService.saveOETData(Integer.toString(id), data);
 
-	// convert url entry to data
-	Map<String, String> args = CoralUtils.urlToMap(arg);
-	data.putAll(args);
+        // convert url entry to data
+        Map<String, String> args = CoralUtils.urlToMap(arg);
+        data.putAll(args);
 
-	// VALIDATION and debug/flow messages
-	ErrorFlag condition = new ErrorFlag(false);
-	boolean skiperror = args.containsKey("skiperror");
-	boolean reload = args.containsKey("reload")
-		|| args.containsKey("refreshid");
-	boolean skipback = args.containsKey("skipback");
-	boolean noloop = args.containsKey("noloop");
-	boolean skipederror = args.containsKey("skipederror");
+        // VALIDATION and debug/flow messages
+        ErrorFlag condition = new ErrorFlag(false);
+        boolean skiperror = args.containsKey("skiperror");
+        boolean reload = args.containsKey("reload")
+                || args.containsKey("refreshid");
+        boolean skipback = args.containsKey("skipback");
+        boolean noloop = args.containsKey("noloop");
+        boolean skipederror = args.containsKey("skipederror");
 
-	ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
+        ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
 
-	ExpStage enterstage = stages.get(data.stageCounter());
-	boolean isvalid;
-	if (!reload) {
-	    logger.info("validate stage  " + data.stageCounter() + " -> "
-		    + enterstage.getTemplate() + "");
-	    isvalid = error.validateFormated(data, enterstage.getValidate());
-	} else {
-	    isvalid = true;
-	}
+        ExpStage enterstage = stages.get(data.stageCounter());
+        boolean isvalid;
+        if (!reload) {
+            logger.info("validate stage  " + data.stageCounter() + " -> "
+                    + enterstage.getTemplate() + "");
+            isvalid = error.validateFormated(data, enterstage.getValidate());
+        } else {
+            isvalid = true;
+        }
 
-	// SAVE INCOMING DATA
-	data.put("_now", Long.toString(System.currentTimeMillis()));
-	data.put("_nownano", Long.toString(System.nanoTime()));
-	data.put("_mode", "incoming");
-	data.put("_valid", isvalid);
-	data.template = enterstage.getTemplate();
-	data._msgCounter++;
-	dataService.saveOETData(Integer.toString(id), data);
+        // SAVE INCOMING DATA
+        data.put("_now", Long.toString(System.currentTimeMillis()));
+        data.put("_nownano", Long.toString(System.nanoTime()));
+        data.put("_mode", "incoming");
+        data.put("_valid", isvalid);
+        data.template = enterstage.getTemplate();
+        data._msgCounter++;
+        dataService.saveOETData(Integer.toString(id), data);
 
-	// CHANGE STAGE AND LOOP
-	ExpStage thisstage = stages.get(data.stageCounter());
-	boolean meetscondition = condition.validateFormated(data,
-		thisstage.getCondition());
-	if (logger.isDebugEnabled())
-	    logger.debug("is condition valid: " + condition.isValid());
+        // CHANGE STAGE AND LOOP
+        ExpStage thisstage = stages.get(data.stageCounter());
+        boolean meetscondition = condition.validateFormated(data,
+                thisstage.getCondition());
+        if (logger.isDebugEnabled())
+            logger.debug("is condition valid: " + condition.isValid());
 
-	if (!skipback
-		&& !reload
-		&& (isvalid || !meetscondition)
-		&& (thisstage.getWaitFor().equals("") || (args
-			.containsKey("wait") && args.get("wait").equals(
-			"_waited")))) {
+        if (!skipback
+                && !reload
+                && (isvalid || !meetscondition)
+                && (thisstage.getWaitFor().equals("") || (args
+                        .containsKey("wait") && args.get("wait").equals(
+                        "_waited")))) {
 
-	    // set this repeat if not already countingIs
-	    if (isvalid
-		    && clientstagecounter.get(id).get(data.stageCounter()) < 0
-		    && enterstage.getLooprepeat() >= 0) {
-		clientstagecounter.get(id).set(data.stageCounter(),
-			enterstage.getLooprepeat());
-	    }
+            // set this repeat if not already countingIs
+            if (isvalid
+                    && clientstagecounter.get(id).get(data.stageCounter()) < 0
+                    && enterstage.getLooprepeat() >= 0) {
+                clientstagecounter.get(id).set(data.stageCounter(),
+                        enterstage.getLooprepeat());
+            }
 
-	    // check if loop or progress
-	    if (isvalid
-		    && ((clientstagecounter.get(id).get(data.stageCounter()) > 0 && !noloop) || ((clientstagecounter
-			    .get(id).get(data.stageCounter()) < 0 && !skipederror)))) {
-		logger.debug("repeat stage");
-		int repeat = clientstagecounter.get(id)
-			.get(data.stageCounter());
-		clientstagecounter.get(id).set(data.stageCounter(),
-			(repeat - 1));
-		data._stageCounter -= enterstage.getLoopback();
-	    } else if ((data.stageCounter() + 1) < stages.size()) {
-		logger.debug("next stage");
-		int repeat = clientstagecounter.get(id)
-			.get(data.stageCounter());
-		clientstagecounter.get(id).set(data.stageCounter(),
-			(repeat - 1));
-		data._stageCounter++;
-	    }
-	    if (logger.isDebugEnabled())
-		logger.debug("loop counter state: "
-			+ Arrays.toString(clientstagecounter.get(id).toArray()));
+            // check if loop or progress
+            if (isvalid
+                    && ((clientstagecounter.get(id).get(data.stageCounter()) > 0 && !noloop) || ((clientstagecounter
+                            .get(id).get(data.stageCounter()) < 0 && !skipederror)))) {
+                logger.debug("repeat stage");
+                int repeat = clientstagecounter.get(id)
+                        .get(data.stageCounter());
+                clientstagecounter.get(id).set(data.stageCounter(),
+                        (repeat - 1));
+                data._stageCounter -= enterstage.getLoopback();
+            } else if ((data.stageCounter() + 1) < stages.size()) {
+                logger.debug("next stage");
+                int repeat = clientstagecounter.get(id)
+                        .get(data.stageCounter());
+                clientstagecounter.get(id).set(data.stageCounter(),
+                        (repeat - 1));
+                data._stageCounter++;
+            }
+            if (logger.isDebugEnabled())
+                logger.debug("loop counter state: "
+                        + Arrays.toString(clientstagecounter.get(id).toArray()));
 
-	    thisstage = stages.get(data.stageCounter());
-	    meetscondition = condition.validateFormated(data,
-		    thisstage.getCondition());
+            thisstage = stages.get(data.stageCounter());
+            meetscondition = condition.validateFormated(data,
+                    thisstage.getCondition());
 
-	    while (!meetscondition
-		    && ((data.stageCounter() + 1) < stages.size())) {
-		logger.debug("next stage with condition: ###"
-			+ Arrays.toString(thisstage.getCondition()) + "###");
-		data._stageCounter++;
-		thisstage = stages.get(data.stageCounter());
-		meetscondition = condition.validateFormated(data,
-			thisstage.getCondition());
-	    }
-	    data.setNewpage(true);
-	} else if (skipback) {
+            while (!meetscondition
+                    && ((data.stageCounter() + 1) < stages.size())) {
+                logger.debug("next stage with condition: ###"
+                        + Arrays.toString(thisstage.getCondition()) + "###");
+                data._stageCounter++;
+                thisstage = stages.get(data.stageCounter());
+                meetscondition = condition.validateFormated(data,
+                        thisstage.getCondition());
+            }
+            data.setNewpage(true);
+        } else if (skipback) {
 
-	    if ((data.stageCounter()) > 1) {
-		logger.debug("previous stage");
-		data._stageCounter--;
-	    }
+            if ((data.stageCounter()) > 1) {
+                logger.debug("previous stage");
+                data._stageCounter--;
+            }
 
-	    thisstage = stages.get(data.stageCounter());
-	    data.setNewpage(true);
-	}
+            thisstage = stages.get(data.stageCounter());
+            data.setNewpage(true);
+        }
 
-	// EVALUATE SCRIPT
+        // EVALUATE SCRIPT
 
-	String output = null;
+        String output = null;
 
-	// TODO clean up code to ressync
-	if ((thisstage.getCondition() != null
-		&& thisstage.getCondition().length > 0 && thisstage
-		    .getCondition()[0].equals("*"))) {
-	    ch.sendRes(id, thisstage.getTemplate());
-	    try {
-		Thread.sleep(100);
-	    } catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		logger.error("main prosses interupted", e);
-	    }
-	} else {
-	    logger.info("evaluate stage " + data.stageCounter() + " -> "
-		    + thisstage.getTemplate() + "");
+        // TODO clean up code to ressync
+        if ((thisstage.getCondition() != null
+                && thisstage.getCondition().length > 0 && thisstage
+                    .getCondition()[0].equals("*"))) {
+            ch.sendRes(id, thisstage.getTemplate());
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                logger.error("main prosses interupted", e);
+            }
+        } else {
+            logger.info("evaluate stage " + data.stageCounter() + " -> "
+                    + thisstage.getTemplate() + "");
 
-	    data.put("template", thisstage.getTemplate());
-	    output = baseService.eval(thisstage.getTemplate(), data, error,
-		    this);
+            data.put("template", thisstage.getTemplate());
+            output = baseService.eval(thisstage.getTemplate(), data, error,
+                    this);
 
-	    data.setNewpage(false);
-	}
+            data.setNewpage(false);
+        }
 
-	// SAVE OUTGOING DATA
+        // SAVE OUTGOING DATA
 
-	data.put("_now", Long.toString(System.currentTimeMillis()));
-	data.put("_nownano", Long.toString(System.nanoTime()));
-	data.put("_mode", "outgoing");
-	data.put("_coralhost", _coralhost);
-	data._msgCounter++;
-	dataService.saveOETData(Integer.toString(id), data);
+        data.put("_now", Long.toString(System.currentTimeMillis()));
+        data.put("_nownano", Long.toString(System.nanoTime()));
+        data.put("_mode", "outgoing");
+        data.put("_coralhost", _coralhost);
+        data._msgCounter++;
+        dataService.saveOETData(Integer.toString(id), data);
 
-	// BROADCAST OR ADVANCE
+        // BROADCAST OR ADVANCE
 
-	if (output == null) {
-	    data.setNewpage(true);
-	    String append = (skiperror || skipederror) ? "&skipederror=true"
-		    : "";
-	    if ( skipback ) {
-		append += "&skipback=true";
-	    }
-	    process(id, "?nextmsg=true" + append + "");
-	} else {
-	    ch.broadcast(id, output);
-	}
+        if (output == null) {
+            data.setNewpage(true);
+            String append = (skiperror || skipederror) ? "&skipederror=true"
+                    : "";
+            if (skipback) {
+                append += "&skipback=true";
+            }
+            process(id, "?nextmsg=true" + append + "");
+        } else {
+            ch.broadcast(id, output);
+        }
 
-	if (!thisstage.getWaitFor().equals("")) {
-	    data.put("_waitnr", "");
-	    ch.wait(id, thisstage.getWaitFor(), data.stageCounter(),
-		    clientstagecounter.get(id).get(data.stageCounter()));
-	}
+        if (!thisstage.getWaitFor().equals("")) {
+            data.put("_waitnr", "");
+            ch.wait(id, thisstage.getWaitFor(), data.stageCounter(),
+                    clientstagecounter.get(id).get(data.stageCounter()));
+        }
     }
 
     public Map<Integer, ExpData> getAllData() {
-	return dataMap;
+        return dataMap;
     }
 
     @Override
     public boolean isDebug() {
-	return debug;
+        return debug;
     }
 
 }
