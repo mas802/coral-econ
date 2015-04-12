@@ -19,18 +19,15 @@ import coral.model.ExpData;
 
 public interface IExpService {
 
-	public final static String START_KEY = "__BEGIN";
-	public final static String KILL_KEY = "__KILL";
+    public void process(Integer id, String msg);
 
-	public void process(Integer id, String msg);
+    public ExpData getData(Integer id);
 
-	public ExpData getData(Integer id);
+    public boolean isDebug();
 
-	public boolean isDebug();
+    public void evalTemplate(Integer id, String filename);
 
-	public void evalTemplate(Integer id, String filename);
+    public void addClient(Integer clientCount);
 
-	public void addClient(Integer clientCount);
-
-	public void removeClient(Integer id);
+    public void removeClient(Integer id);
 }

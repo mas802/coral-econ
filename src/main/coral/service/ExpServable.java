@@ -71,6 +71,10 @@ public class ExpServable implements Servable, ExpHandler {
     // Thread serverthread = null;
     // BlockingQueue<Message> serverqueue = null;
 
+    private String startMarker;
+    private String refreshMarker;
+    private String serverMarker;
+
     Linker linker = null;
 
     String servervm = "info.vm";
@@ -82,7 +86,8 @@ public class ExpServable implements Servable, ExpHandler {
         Integer id = getClientId(outQueue);
         String c = cmd.getFullContent();
 
-        c.replaceAll("/__", "__");
+        // remove leading slash /
+        c.replaceAll("^/", "");
 
         logger.info("run cmd on server: ####" + c + "#### to " + id);
 
@@ -94,10 +99,10 @@ public class ExpServable implements Servable, ExpHandler {
             int pos = c.indexOf("__FILE/");
             String filename = c.substring(pos + 7);
             service.evalTemplate(id, filename);
-        } else if (c.startsWith("__SERVER")) {
+        } else if (c.startsWith(serverMarker)) {
             logger.info("client " + id + " requests server " + c);
             server.process(id, c, outQueue);
-        } else if (c.startsWith("__REFRESH")) {
+        } else if (c.startsWith(refreshMarker)) {
             id = Integer.parseInt(c.replaceAll("[^\\d]", ""));
             logger.info("refresh client " + id + " " + c);
 
@@ -140,7 +145,7 @@ public class ExpServable implements Servable, ExpHandler {
                 }
             }
             service.process(id, c);
-        } else if (c.startsWith(IExpService.START_KEY)) {
+        } else if (c.startsWith(startMarker)) {
             logger.info("START new client (discard old one)");
             clients.remove(outQueue);
             clientCount = dataService.getNewId(clientCount + 1);
@@ -148,7 +153,7 @@ public class ExpServable implements Servable, ExpHandler {
             service.addClient(clientCount);
             id = clientCount;
             service.process(id, c);
-        } else if (c.startsWith(IExpService.KILL_KEY)) {
+        } else if (c.startsWith(CoralUtils.KILL_KEY)) {
 
             // kills the client with the given id (any number in the command)
             id = Integer.parseInt(cmd.getQuery().get("id"));
@@ -405,39 +410,48 @@ public class ExpServable implements Servable, ExpHandler {
     }
 
     @Override
-    public void init(Properties prop, BlockingQueue<Message> loopQueue,
+    public void init(Properties properties, BlockingQueue<Message> loopQueue,
             Linker linker) {
 
         this.linker = linker;
 
-        this.basepath = prop.getProperty("exp.basepath", "./");
+        this.basepath = properties.getProperty("exp.basepath", "./");
 
-        String dbname = prop.getProperty("coral.db.name", "db");
-        String dbmode = prop.getProperty("coral.db.mode", "file");
-        boolean resetdb = (prop.getProperty("coral.db.reset", "false")
+        String dbname = properties.getProperty("coral.db.name", "db");
+        String dbmode = properties.getProperty("coral.db.mode", "file");
+        boolean resetdb = (properties.getProperty("coral.db.reset", "false")
                 .equals("true"));
         dataService = new DataServiceJbdcImpl(dbname, resetdb, dbmode);
-        CoralUtils.hoststr = prop.getProperty("coral.head.coralhost",
+        CoralUtils.hoststr = properties.getProperty("coral.head.coralhost",
                 "exp://host/");
-        ExpServiceImpl serv = new ExpServiceImpl(this, basepath, dataService);
+        ExpServiceImpl serv = new ExpServiceImpl(this, properties, dataService);
 
-        if (prop.containsKey("exp.stagesfile")) {
-            this.stagesfile = prop.getProperty("exp.stagesfile");
+        if (properties.containsKey("exp.stagesfile")) {
+            this.stagesfile = properties.getProperty("exp.stagesfile");
         }
-        serv.init(basepath, stagesfile, prop.getProperty("coral.exp.variant"));
+        serv.init(basepath, stagesfile,
+                properties.getProperty("coral.exp.variant"));
 
-        this.viewname = prop.getProperty("exp.viewname", "_exp.html");
+        this.viewname = properties.getProperty("exp.viewname", "_exp.html");
 
-        this.server = new ExpServer(0, prop.getProperty("exp.servertype",
+        this.server = new ExpServer(0, properties.getProperty("exp.servertype",
                 "none"), this, dataService);
 
-        serv.debug = (prop.getProperty("coral.debug", "false").equals("true"));
+        serv.debug = (properties.getProperty("coral.debug", "false")
+                .equals("true"));
         logger.debug("debug status is "
-                + prop.getProperty("exp.debug", "false") + "  --  "
+                + properties.getProperty("exp.debug", "false") + "  --  "
                 + serv.debug);
 
-        useScreenwriter = (prop.getProperty("coral.head.screenwriter", "false")
-                .equals("true"));
+        useScreenwriter = (properties.getProperty("coral.head.screenwriter",
+                "false").equals("true"));
+
+        this.startMarker = properties.getProperty("coral.cmd.start",
+                CoralUtils.START_KEY);
+        this.refreshMarker = properties.getProperty("coral.cmd.refresh",
+                CoralUtils.REFRESH_KEY);
+        this.serverMarker = properties.getProperty("coral.cmd.server",
+                CoralUtils.SERVER_KEY);
 
         this.service = serv;
     }

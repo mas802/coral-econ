@@ -17,6 +17,7 @@ import any.IConnection;
 import any.Linker;
 import coral.CoralHead;
 import coral.service.IExpService;
+import coral.utils.CoralUtils;
 
 public class ExpWebServer {
 
@@ -30,9 +31,9 @@ public class ExpWebServer {
     private int coralport;
     private ServerSocket server;
 
-    private String startMarker = IExpService.START_KEY;
-    private String refreshMarker = "__REFRESH";
-    private String serverMarker = "__SERVER";
+    private String startMarker;
+    private String refreshMarker;
+    private String serverMarker;
 
     // private String stopMarker = "__STOP";
 
@@ -47,6 +48,29 @@ public class ExpWebServer {
         Thread t = new Thread(new ServerExec());
         t.start();
     }
+    
+    public ExpWebServer(Properties properties) throws IOException {
+
+        this.path = properties.getProperty("coral.web.path", "" );
+        
+        String host = properties.getProperty("coral.web.hostname", "localhost" );
+        int port = Integer.parseInt( properties.getProperty("coral.web.port", "8080" ));
+        
+        this.hoststr = properties.getProperty("coral.web.exphost","http://" + host + ":" + port + "/");
+        this.coralport =  Integer.parseInt(properties.getProperty( "any.port", "43802"));
+
+        this.startMarker = properties.getProperty("coral.cmd.start",
+                CoralUtils.START_KEY);
+        this.refreshMarker = properties.getProperty("coral.cmd.refresh",
+                CoralUtils.REFRESH_KEY);
+        this.serverMarker = properties.getProperty("coral.cmd.server",
+                CoralUtils.SERVER_KEY);
+
+        this.server = new ServerSocket(port);
+        Thread t = new Thread(new ServerExec());
+        t.start();
+    }
+    
 
     public class ServerExec implements Runnable {
 

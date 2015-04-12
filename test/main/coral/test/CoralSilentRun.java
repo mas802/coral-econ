@@ -14,6 +14,7 @@ import coral.model.ExpStage;
 import coral.service.ExpServable;
 import coral.service.ExpServiceImpl;
 import coral.service.IExpService;
+import coral.utils.CoralUtils;
 
 public class CoralSilentRun {
 
@@ -53,7 +54,7 @@ public class CoralSilentRun {
 
         // kick off
         for (int i = 0; i < x; i++) {
-            testHandler.process(new Message("/" + IExpService.START_KEY),
+            testHandler.process(new Message("/" + CoralUtils.START_KEY),
                     clients.get(i));
         }
         /*

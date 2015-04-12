@@ -52,77 +52,78 @@ public class CoralHeadServable extends VsetServable {
     private Browser sidebrowser;
 
     @Override
-    public void init(Properties properties, BlockingQueue<Message> loopQueue, Linker linker) {
+    public void init(Properties properties, BlockingQueue<Message> loopQueue,
+            Linker linker) {
 
-	shell = (Shell) properties.get("shell");
+        shell = (Shell) properties.get("shell");
 
-	if (!properties.containsKey("coral.head.res")) {
-	    try {
-		res = File.createTempFile("coral", "server");
-		res.delete();
-		res.mkdirs();
-	    } catch (IOException e1) {
-		throw new RuntimeException(
-			"problem creating temporary directory for polyp, please specify with coral.polyp.res",
-			e1);
-	    }
-	} else {
-	    res = new File(properties.getProperty("coral.head.res"),
-		    "server_res/");
-	    res.mkdirs();
-	}
+        if (!properties.containsKey("coral.head.res")) {
+            try {
+                res = File.createTempFile("coral", "server");
+                res.delete();
+                res.mkdirs();
+            } catch (IOException e1) {
+                throw new RuntimeException(
+                        "problem creating temporary directory for polyp, please specify with coral.polyp.res",
+                        e1);
+            }
+        } else {
+            res = new File(properties.getProperty("coral.head.res"),
+                    "server_res/");
+            res.mkdirs();
+        }
 
-	mainfilename = properties.getProperty("coral.head.main", "main.html");
+        mainfilename = properties.getProperty("coral.head.main", "main.html");
 
-	String sidebarfilename = properties.getProperty("coral.head.sidebar",
-		"servervm/sidebar.html");
+        String sidebarfilename = properties.getProperty("coral.head.sidebar",
+                "servervm/sidebar.html");
 
-	File dir = new File(properties.getProperty("exp.basepath", "./"));
-	File sidebarfile = new File(dir, sidebarfilename);
+        File dir = new File(properties.getProperty("exp.basepath", "./"));
+        File sidebarfile = new File(dir, sidebarfilename);
 
-	String sidebartext = "<html><a href='" + CoralUtils.getHostStr()
-		+ "__SERVER/info.vm'>SERVER</a></html>";
-	if (sidebarfile.exists()) {
-	    try {
-		sidebartext = new Scanner(sidebarfile).useDelimiter("\\Z")
-			.next();
-	    } catch (FileNotFoundException e) {
-		logger.warn("Could not read sidebar file " + sidebarfilename, e);
-	    }
-	}
+        String sidebartext = "<html><a href='" + CoralUtils.getHostStr()
+                + CoralUtils.SERVER_KEY + "/info.vm'>SERVER</a></html>";
+        if (sidebarfile.exists()) {
+            try {
+                sidebartext = new Scanner(sidebarfile).useDelimiter("\\Z")
+                        .next();
+            } catch (FileNotFoundException e) {
+                logger.warn("Could not read sidebar file " + sidebarfilename, e);
+            }
+        }
 
-	try {
-	    sidebrowser = new Browser(shell, SWT.NONE);
-	} catch (SWTError e) {
-	    logger.warn("Could not instantiate sidebar Browser: ", e);
-	    throw new RuntimeException("Could not instantiate Browser", e);
-	}
+        try {
+            sidebrowser = new Browser(shell, SWT.NONE);
+        } catch (SWTError e) {
+            logger.warn("Could not instantiate sidebar Browser: ", e);
+            throw new RuntimeException("Could not instantiate Browser", e);
+        }
 
-	super.setup();
+        super.setup();
 
-	browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
+        browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
-	sidebrowser.setText(sidebartext);
-	sidebrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
-		1, 1));
+        sidebrowser.setText(sidebartext);
+        sidebrowser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
+                1, 1));
 
-	sidebrowser.addLocationListener(getLocationListener());
+        sidebrowser.addLocationListener(getLocationListener());
 
-	GridLayout gridLayout = new GridLayout();
-	gridLayout.numColumns = 5;
-	gridLayout.makeColumnsEqualWidth = true;
-	shell.setLayout(gridLayout);
+        GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 5;
+        gridLayout.makeColumnsEqualWidth = true;
+        shell.setLayout(gridLayout);
 
-	// Shell shell = new Shell(SWT.NO_TRIM | SWT.ON_TOP);
-	// shell.setLayout(new FillLayout());
-	// shell.setBounds(Display.getDefault().getPrimaryMonitor().getBounds());
+        // Shell shell = new Shell(SWT.NO_TRIM | SWT.ON_TOP);
+        // shell.setLayout(new FillLayout());
+        // shell.setBounds(Display.getDefault().getPrimaryMonitor().getBounds());
 
-	// shell.setBounds(20,20,1044,788);
-	// shell.open();
+        // shell.setBounds(20,20,1044,788);
+        // shell.open();
 
-	// res.mkdirs();
+        // res.mkdirs();
 
-	logger.debug("ready");
+        logger.debug("ready");
     }
 
 }

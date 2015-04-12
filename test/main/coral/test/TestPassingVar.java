@@ -15,12 +15,13 @@
  */
 package coral.test;
 
+import java.util.Properties;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.*;
-
 import coral.model.ExpData;
 import coral.service.ExpServiceImpl;
 import coral.service.ExpTemplateUtil;
@@ -35,7 +36,7 @@ public class TestPassingVar {
 	    ExpTemplateUtil tu = new ExpTemplateUtil("./");
 	    
 	    
-	    ExpServiceImpl service = new ExpServiceImpl(null, ".", null);
+	    ExpServiceImpl service = new ExpServiceImpl(null, new Properties(), null);
 	    
 	    service.addClient(0);
 	    service.addClient(1);

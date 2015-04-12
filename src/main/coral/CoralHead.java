@@ -26,218 +26,204 @@ import any.Linker;
 // import coral.test.CoralLogRun;
 
 /*
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
-*/
+ import org.eclipse.swt.SWT;
+ import org.eclipse.swt.layout.FillLayout;
+ import org.eclipse.swt.widgets.Display;
+ import org.eclipse.swt.widgets.Event;
+ import org.eclipse.swt.widgets.Listener;
+ import org.eclipse.swt.widgets.Shell;
+ */
 import coral.web.ExpWebServer;
 
 public class CoralHead {
 
-	public static void build(String... args) {
+    public static void build(String... args) {
 
-		Properties generalProp = new Properties();
+        Properties generalProp = new Properties();
 
-		// add commandline properties
-		for (String a : args) {
-			if (a.contains("=")) {
-				String[] sp = a.split("=");
-				generalProp.put(sp[0], sp[1]);
-			} else if (a.endsWith(".properties")) {
-				try {
-					generalProp.load(new FileInputStream(a));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					lastresort(e.getMessage());
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					lastresort(e.getMessage());
-					e.printStackTrace();
-				}
-/*			} else if (a.endsWith(".log")) {
-			    CoralLogRun lr = new CoralLogRun();
-			    
-			    if (a.length() == 1) {
-				try {
-					generalProp.load(new FileInputStream("coral.properties"));
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					lastresort(e.getMessage());
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					lastresort(e.getMessage());
-					e.printStackTrace();
-				}
-			    }
-			    
-			    lr.init(new File(generalProp.getProperty( "exp.basepath", "." )), generalProp.getProperty( "exp.stagesfile", "stages.csv" ), a, "rerun.raw");
-			    return;
-			*/
-			}
-			
-		}
+        // add commandline properties
+        for (String a : args) {
+            if (a.contains("=")) {
+                String[] sp = a.split("=");
+                generalProp.put(sp[0], sp[1]);
+            } else if (a.endsWith(".properties")) {
+                try {
+                    generalProp.load(new FileInputStream(a));
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    lastresort(e.getMessage());
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    lastresort(e.getMessage());
+                    e.printStackTrace();
+                }
+                /*
+                 * } else if (a.endsWith(".log")) { CoralLogRun lr = new
+                 * CoralLogRun();
+                 * 
+                 * if (a.length() == 1) { try { generalProp.load(new
+                 * FileInputStream("coral.properties")); } catch
+                 * (FileNotFoundException e) { // TODO Auto-generated catch
+                 * block lastresort(e.getMessage()); e.printStackTrace(); }
+                 * catch (IOException e) { // TODO Auto-generated catch block
+                 * lastresort(e.getMessage()); e.printStackTrace(); } }
+                 * 
+                 * lr.init(new File(generalProp.getProperty( "exp.basepath", "."
+                 * )), generalProp.getProperty( "exp.stagesfile", "stages.csv"
+                 * ), a, "rerun.raw"); return;
+                 */
+            }
 
-		/*
-		 * TODO this never worked properly // FIND coral.ask parameters for
-		 * (Object key : generalProp.keySet()) { String value =
-		 * generalProp.getProperty((String) key); if (value != null &&
-		 * (value.startsWith("coral.ask"))) {
-		 * 
-		 * String s = (String) JOptionPane.showInputDialog( (Component) null,
-		 * (String) key, "enter value", JOptionPane.PLAIN_MESSAGE);
-		 * 
-		 * generalProp.put(key, s);
-		 * 
-		 * } }
-		 */
+        }
 
-		
-		boolean webserver = generalProp.getProperty("coral.web.server", "false").equals("true");
-		
-		if ( webserver ) {
-			String webhost = generalProp.getProperty("coral.web.hostname", "localhost" );
-			String webpath = generalProp.getProperty("coral.web.path", "" );
-			int webport = Integer.parseInt( generalProp.getProperty("coral.web.port", "8080" ));;
-			try {
-				String hoststr = generalProp.getProperty("coral.web.exphost","http://" + webhost + ":" + webport + "/");
-				new ExpWebServer(hoststr, webpath, webhost, webport, Integer.parseInt(generalProp.getProperty( "any.port", "43802")));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				lastresort(e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		
-		boolean hasdisplay = generalProp.containsKey("swtvset")
-				&& generalProp.get("swtvset").equals("true");
+        /*
+         * TODO this never worked properly // FIND coral.ask parameters for
+         * (Object key : generalProp.keySet()) { String value =
+         * generalProp.getProperty((String) key); if (value != null &&
+         * (value.startsWith("coral.ask"))) {
+         * 
+         * String s = (String) JOptionPane.showInputDialog( (Component) null,
+         * (String) key, "enter value", JOptionPane.PLAIN_MESSAGE);
+         * 
+         * generalProp.put(key, s);
+         * 
+         * } }
+         */
 
-		if (hasdisplay) {
+        boolean webserver = generalProp
+                .getProperty("coral.web.server", "false").equals("true");
 
-			final org.eclipse.swt.widgets.Shell shell;
-			org.eclipse.swt.widgets.Display display = org.eclipse.swt.widgets.Display.getDefault();
+        if (webserver) {
+            try {
+                new ExpWebServer(generalProp);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                lastresort(e.getMessage());
+                e.printStackTrace();
+            }
+        }
 
-			//
-			// the server process
-			//
-			if (true) { // TODO is server?
-				shell = new org.eclipse.swt.widgets.Shell(display);
-				shell.setLayout(new org.eclipse.swt.layout.FillLayout());
-				generalProp.put("shell", shell);
+        boolean hasdisplay = generalProp.containsKey("swtvset")
+                && generalProp.get("swtvset").equals("true");
 
-				final Linker s = new Linker(generalProp);
+        if (hasdisplay) {
 
-				if (generalProp.getProperty("coral.vset", "true")
-						.equals("true")) {
-					CoralHeadServable vset = new CoralHeadServable();
-					vset.init(generalProp, null, null);
-					s.getServableMap().put("vset", vset);
-					s.getServableMap().put("info", vset.new SetInfoServable());
+            final org.eclipse.swt.widgets.Shell shell;
+            org.eclipse.swt.widgets.Display display = org.eclipse.swt.widgets.Display
+                    .getDefault();
 
-					new Thread() {
-						public void run() {
-							IConnection loop = s.getNamedCon().get("loop");
-							s.getServableMap().get("vset")
-									.process(null, loop.getOutQueue());
-						}
-					}.start();
-				}
+            //
+            // the server process
+            //
+            if (true) { // TODO is server?
+                shell = new org.eclipse.swt.widgets.Shell(display);
+                shell.setLayout(new org.eclipse.swt.layout.FillLayout());
+                generalProp.put("shell", shell);
 
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						s.serve();
-					}
-				}).start();
-				
-				display.addFilter(org.eclipse.swt.SWT.Close, new org.eclipse.swt.widgets.Listener() {
-				        
-				   @Override
-				   public void handleEvent(org.eclipse.swt.widgets.Event e) {
-				       if (e.widget == shell) { 
-				    	// TODO Auto-generated method stub
-				    	System.exit(0);
-				       }
-				   }
-				});
+                final Linker s = new Linker(generalProp);
 
-				shell.open();
-			}
+                if (generalProp.getProperty("coral.vset", "true")
+                        .equals("true")) {
+                    CoralHeadServable vset = new CoralHeadServable();
+                    vset.init(generalProp, null, null);
+                    s.getServableMap().put("vset", vset);
+                    s.getServableMap().put("info", vset.new SetInfoServable());
 
-			int noclients = Integer.parseInt( generalProp.getProperty("coral.polyp.number", "0" ));
+                    new Thread() {
+                        public void run() {
+                            IConnection loop = s.getNamedCon().get("loop");
+                            s.getServableMap().get("vset")
+                                    .process(null, loop.getOutQueue());
+                        }
+                    }.start();
+                }
 
-			if ( noclients > 0 ) {
-				CoralPolyp.makeClient( generalProp );
-			}
-			
-			// FIXME swt legacy
-			while (!shell.isDisposed()) {
-				if (!display.readAndDispatch()) {
-					display.sleep();
-				}
-			}
-		} else {
-			final Linker s = new Linker(generalProp);
-			s.serve();
-		}
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        s.serve();
+                    }
+                }).start();
 
-	}
+                display.addFilter(org.eclipse.swt.SWT.Close,
+                        new org.eclipse.swt.widgets.Listener() {
 
-	public static void main(String[] args) throws InstantiationException,
-			IllegalAccessException, ClassNotFoundException,
-			FileNotFoundException, IOException {
+                            @Override
+                            public void handleEvent(
+                                    org.eclipse.swt.widgets.Event e) {
+                                if (e.widget == shell) {
+                                    // TODO Auto-generated method stub
+                                    System.exit(0);
+                                }
+                            }
+                        });
 
-		if (args.length == 0) {
-			args = new String[] { "coral.properties" };
-		}
+                shell.open();
+            }
 
-		build(args);
+            int noclients = Integer.parseInt(generalProp.getProperty(
+                    "coral.polyp.number", "0"));
 
-	}
+            if (noclients > 0) {
+                CoralPolyp.makeClient(generalProp);
+            }
 
-	/* not working properly
-	private static void loadSwtJar(String swtPath) {
-		if (swtPath == null) {
-			String osName = System.getProperty("os.name").toLowerCase();
-			String osArch = System.getProperty("os.arch").toLowerCase();
+            // FIXME swt legacy
+            while (!shell.isDisposed()) {
+                if (!display.readAndDispatch()) {
+                    display.sleep();
+                }
+            }
+        } else {
+            final Linker s = new Linker(generalProp);
+            s.serve();
+        }
 
-			String swtFileNameOsPart = osName.contains("win") ? "win32"
-					: osName.contains("mac") ? "osx" : osName.contains("linux")
-							|| osName.contains("nix") ? "linux" : ""; 
-			
-			String swtFileNameArchPart = osArch.contains("64") ? "_x86_64" : "";
-			swtPath = "/Users/mas/workspace/java/Coral/lib/swt-" + swtFileNameOsPart + swtFileNameArchPart
-					+ ".jar";
-		}
+    }
 
-		try {
-			URL swtFileUrl = new URL("file:" + swtPath);
+    public static void main(String[] args) throws InstantiationException,
+            IllegalAccessException, ClassNotFoundException,
+            FileNotFoundException, IOException {
 
-			URLClassLoader classLoader = (URLClassLoader) CoralHead.class
-					.getClassLoader();
-			Method addUrlMethod = URLClassLoader.class.getDeclaredMethod(
-					"addURL", URL.class);
-			addUrlMethod.setAccessible(true);
+        if (args.length == 0) {
+            args = new String[] { "coral.properties" };
+        }
 
-			addUrlMethod.invoke(classLoader, swtFileUrl);
-			System.out.println("Added the swt jar to the class path: "
-					+ swtPath);
-		} catch (Exception e) {
-			System.out.println("Unable to add the swt jar to the class path: "
-					+ swtPath);
-			lastresort(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	*/
-	
-	
-	private static void lastresort(String s){
-	    System.out.println( s );
-	    javax.swing.JOptionPane.showMessageDialog(null, s);
-	}
+        build(args);
+
+    }
+
+    /*
+     * not working properly private static void loadSwtJar(String swtPath) { if
+     * (swtPath == null) { String osName =
+     * System.getProperty("os.name").toLowerCase(); String osArch =
+     * System.getProperty("os.arch").toLowerCase();
+     * 
+     * String swtFileNameOsPart = osName.contains("win") ? "win32" :
+     * osName.contains("mac") ? "osx" : osName.contains("linux") ||
+     * osName.contains("nix") ? "linux" : "";
+     * 
+     * String swtFileNameArchPart = osArch.contains("64") ? "_x86_64" : "";
+     * swtPath = "/Users/mas/workspace/java/Coral/lib/swt-" + swtFileNameOsPart
+     * + swtFileNameArchPart + ".jar"; }
+     * 
+     * try { URL swtFileUrl = new URL("file:" + swtPath);
+     * 
+     * URLClassLoader classLoader = (URLClassLoader) CoralHead.class
+     * .getClassLoader(); Method addUrlMethod =
+     * URLClassLoader.class.getDeclaredMethod( "addURL", URL.class);
+     * addUrlMethod.setAccessible(true);
+     * 
+     * addUrlMethod.invoke(classLoader, swtFileUrl);
+     * System.out.println("Added the swt jar to the class path: " + swtPath); }
+     * catch (Exception e) {
+     * System.out.println("Unable to add the swt jar to the class path: " +
+     * swtPath); lastresort(e.getMessage()); e.printStackTrace(); } }
+     */
+
+    private static void lastresort(String s) {
+        System.out.println(s);
+        javax.swing.JOptionPane.showMessageDialog(null, s);
+    }
 }
