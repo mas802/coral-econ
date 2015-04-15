@@ -13,7 +13,6 @@ import coral.model.ExpData;
 import coral.model.ExpStage;
 import coral.service.ExpServable;
 import coral.service.ExpServiceImpl;
-import coral.service.IExpService;
 import coral.utils.CoralUtils;
 
 public class CoralSilentRun {

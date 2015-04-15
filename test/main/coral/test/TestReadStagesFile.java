@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import org.junit.Assert;
-
 import org.junit.Test;
 
 import coral.model.ExpStage;

@@ -15,7 +15,6 @@
  */
 package coral;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,7 +23,6 @@ import java.util.Properties;
 import any.IConnection;
 import any.Linker;
 // import coral.test.CoralLogRun;
-
 /*
  import org.eclipse.swt.SWT;
  import org.eclipse.swt.layout.FillLayout;
