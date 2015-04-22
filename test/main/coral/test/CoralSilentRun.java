@@ -2,7 +2,10 @@ package coral.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.logging.Log;
@@ -20,26 +23,36 @@ public class CoralSilentRun {
     protected final Log logger = LogFactory.getLog(this.getClass());
 
     ExpServable testHandler;
+    Random r = new Random();
+    
+    public static void main(String[] args) throws InterruptedException {
 
-    public static void main(String[] args) {
-
+        Thread.sleep(200);
+        
+        
         CoralSilentRun ce = new CoralSilentRun();
-        ce.init();
-    }
-
-    public void init() {
-        testHandler = new ExpServable();
-
+        
         Properties p = new Properties();
 
-        // p.setProperty("coral.exp.stages", "test/testwait.csv");
-        p.setProperty("exp.stagesfile", "coralpres/coralpres.csv");
-        p.setProperty("coral.db.mode", "mem");
+        p.setProperty("exp.basepath", ".");
+        p.setProperty("exp.stagesfile", "stages.csv");
+
+        p.setProperty("coral.db.name", "rerundb");
+        p.setProperty("coral.db.mode", "file");
+        p.setProperty("coral.db.reset", "true");
+        
+        ce.init(p);
+    }
+
+    public void init(Properties p) {
+        testHandler = new ExpServable();
 
         testHandler.init(p, null, null);
 
-        int x = 2;
+        int x = 100;
 
+        Set<Thread> threads = new HashSet<Thread>();
+        
         ArrayList<ArrayBlockingQueue<Message>> clients = new ArrayList<ArrayBlockingQueue<Message>>(
                 16);
         for (int i = 0; i < x; i++) {
@@ -48,7 +61,10 @@ public class CoralSilentRun {
             testHandler.getService().addClient(i);
 
             CoralSilentRun.CE test = this.new CE(i, clients.get(i));
+            test.setDaemon(false);
             test.start();
+            
+            threads.add(test);
         }
 
         // kick off
@@ -65,6 +81,30 @@ public class CoralSilentRun {
          * testHandler.process(new Message("/?test=1", new byte[] {}), client2);
          * testHandler.process(new Message("/?test=1", new byte[] {}), client3);
          */
+        
+        boolean finished = false;
+        while ( !finished ) {
+            finished = true;
+            for ( Thread t:threads) {
+                if ( t.isAlive() ) {
+                    finished = false;
+                }
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        // while ( true ) {}
+        System.out.println(" end " );
+
+        testHandler.process(new Message("__SERVER/?export=silentrun.raw"),
+                clients.get(0));
+        
+        System.out.println(" done " );
 
     }
 
@@ -90,6 +130,13 @@ public class CoralSilentRun {
                     // equals variable
                     String[] p = prop.split(":=");
                     str.append(p[0] + "=" + values.markGet(p[1]));
+                } else if (prop.contains("={")) {
+                    // equals one of a set of values
+                    String[] p = prop.split("=\\{");
+                    String[] set = p[1].substring(0, p[1].length() - 1).split(
+                            "::");
+                    int i = r.nextInt(set.length);
+                    str.append(p[0] + "=" + set[i]);
                 } else if (prop.contains("::")) {
                     // number check
                     String[] p = prop.split("::");
@@ -97,13 +144,14 @@ public class CoralSilentRun {
                     double max = Double.parseDouble(p[2]);
                     int precision = (p[1].contains(".")) ? p[1].substring(
                             p[1].indexOf(".")).length() : 0;
-                    str.append(p[0] + "=" + min);
+                    str.append(p[0] + "="
+                            + (min + r.nextInt((int)Math.ceil(max - min)+1)) );
                 } else if (prop.contains(":")) {
                     int i = prop.indexOf(':');
                     // TODO
                 } else {
                     // null or empty
-                    str.append(prop + "=notnull");
+                    str.append(prop + "=FREE_ENTRY");
                 }
                 str.append("&");
             }
@@ -143,8 +191,10 @@ public class CoralSilentRun {
                     length = service.getStages().size() - 1;
 
                     String[] validate = stage.getValidate();
+                    String[] simulated = stage.getSimulated();
 
                     String vals = values(data, validate);
+                    vals += "&" + values(data, simulated);
 
                     testHandler.process(new Message("auto" + id + "?" + vals),
                             queue);
@@ -153,11 +203,6 @@ public class CoralSilentRun {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
-            // TODO Auto-generated method stub
-            super.run();
         }
-
     }
-
 }

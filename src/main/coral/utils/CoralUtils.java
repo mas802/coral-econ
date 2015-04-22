@@ -175,6 +175,7 @@ public class CoralUtils {
 
                 String[] condition = new String[] {};
                 String[] valid = new String[] {};
+                String[] simulated = new String[] {};
 
                 String waitFor = "";
                 int loopstage = 0;
@@ -216,7 +217,11 @@ public class CoralUtils {
                             + CoralUtils.trimQuotes(parts[5]));
                     waitFor = CoralUtils.trimQuotes(parts[5]);
                 }
-
+                if (l > 6) {
+                    logger.debug("add stage: simulate : " + parts[6]);
+                    simulated = (parts[6].length() > 0) ? CoralUtils
+                            .trimQuotes(parts[6]).split(";") : simulated;
+                }
                 String name = CoralUtils.trimQuotes(parts[0]);
 
                 if (variants != null) {
@@ -244,13 +249,14 @@ public class CoralUtils {
                             + "  ---  " + test.getAbsolutePath());
 
                     ExpStage stage = new ExpStage(name + " (does not exist)",
-                            loopstage, looprepeat, condition, valid, waitFor);
+                            loopstage, looprepeat, condition, valid, waitFor,
+                            simulated);
                     stages.add(stage);
                 } else {
                     String templateRef = test.getAbsolutePath().replace(
                             templateFolder.getAbsolutePath(), "");
                     ExpStage stage = new ExpStage(templateRef, loopstage,
-                            looprepeat, condition, valid, waitFor);
+                            looprepeat, condition, valid, waitFor, simulated);
                     stages.add(stage);
                 }
             }

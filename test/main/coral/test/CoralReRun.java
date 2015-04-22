@@ -47,7 +47,7 @@ public class CoralReRun {
 
         Properties p = new Properties();
 
-        File DIR = new File("~/Dropbox/EXPERIMENTS/snapSurvey/");
+        // File DIR = new File("~/Dropbox/EXPERIMENTS/snapSurvey/");
 
         // p.setProperty("coral.exp.stages", "test/testwait.csv");
         p.setProperty("exp.basepath",
@@ -189,7 +189,7 @@ public class CoralReRun {
 
                 ExpServiceImpl service = null;
                 ExpData data = null;
-                int length = -1;
+                // int length = -1;
 
                 boolean finished = false;
 

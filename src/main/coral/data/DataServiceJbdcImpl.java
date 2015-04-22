@@ -194,6 +194,31 @@ public class DataServiceJbdcImpl implements DataService {
         return map;
     }
 
+    
+    // SELECT
+    /*
+     * (non-Javadoc)
+     * 
+     * @see coral.data.DataService#getMap(java.lang.String, long)
+     */
+    @Override
+    public List<String> getAllVariableNames() throws SQLException {
+
+        List<String> result = new ArrayList<String>();
+
+        Statement stat = conn.createStatement();
+
+        ResultSet rs = stat.executeQuery("SELECT DISTINCT name FROM datas ORDER BY name;");
+        while (rs.next()) {
+            // L.println("name = " + rs.getString("name"));
+            result.add(rs.getString(1));
+        }
+        rs.close();
+
+        stat.close();
+
+        return result;
+    }
     // ALL DATA
     /*
      * (non-Javadoc)

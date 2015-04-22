@@ -17,58 +17,86 @@ package coral.model;
 
 public class ExpStage {
 
-	private String template;
-	
-	private int loopback;
-	public int getLoopback() { return loopback;	}
-	
-	private int looprepeat;
-	public int getLooprepeat() { return looprepeat;	}
-	
-	private String[] condition;
-	public String[] getCondition() { return condition; }
+    private String template;
 
-	private String[] validate;
-	public String[] getValidate() { return validate; }
+    private int loopback;
 
-	private String waitFor = "";
-	public String getWaitFor() { return waitFor; }
-	
-//	private int thisrepeat = -1;
-	
-	public ExpStage(String template) {
-		this(template,0,0);
-	}
-	
-	public ExpStage(String template, int loopstage, int looprepeat) {
-		this(template, null, loopstage, looprepeat);
-	}
-	
-	
-	public ExpStage(String template, String[] nullValidate) {
-		this(template, nullValidate, 0, 0);
-	}
-	
-	public ExpStage(String template, String[] nullValidate, int loopstage, int looprepeat) {
-		this(template, loopstage, looprepeat, nullValidate, "");
-	}
+    public int getLoopback() {
+        return loopback;
+    }
 
-	public ExpStage(String template, int loopstage, int looprepeat,
-			String[] valid, String waitFor) {
-		this(template, loopstage, looprepeat, null, valid, waitFor);
-	}
+    private int looprepeat;
 
-	public ExpStage(String template, int loopstage, int looprepeat,
-			String[] condition, String[] valid, String waitFor) {
-		this.template = template;
-		this.looprepeat = looprepeat;
-		this.loopback = loopstage;
-		this.condition = condition;
-		this.validate = valid;
-		this.waitFor = waitFor;
-	}
+    public int getLooprepeat() {
+        return looprepeat;
+    }
 
-	public String getTemplate() {
-		return template;
-	}
+    private String[] condition;
+
+    public String[] getCondition() {
+        return condition;
+    }
+
+    private String[] validate;
+
+    public String[] getValidate() {
+        return validate;
+    }
+
+    private String waitFor = "";
+
+    public String getWaitFor() {
+        return waitFor;
+    }
+
+    private String[] simulated;
+
+    public String[] getSimulated() {
+        return simulated;
+    }
+
+    // private int thisrepeat = -1;
+
+    public ExpStage(String template) {
+        this(template, 0, 0);
+    }
+
+    public ExpStage(String template, int loopstage, int looprepeat) {
+        this(template, null, loopstage, looprepeat);
+    }
+
+    public ExpStage(String template, String[] nullValidate) {
+        this(template, nullValidate, 0, 0);
+    }
+
+    public ExpStage(String template, String[] nullValidate, int loopstage,
+            int looprepeat) {
+        this(template, loopstage, looprepeat, nullValidate, "");
+    }
+
+    public ExpStage(String template, int loopstage, int looprepeat,
+            String[] valid, String waitFor) {
+        this(template, loopstage, looprepeat, null, valid, waitFor);
+    }
+
+    public ExpStage(String template, int loopstage, int looprepeat,
+            String[] condition, String[] valid, String waitFor) {
+        this(template, loopstage, looprepeat, condition, valid, waitFor, null);
+    }
+
+    public ExpStage(String template, int loopstage, int looprepeat,
+            String[] condition, String[] valid, String waitFor,
+            String[] simulated) {
+        this.template = template;
+        this.looprepeat = looprepeat;
+        this.loopback = loopstage;
+        this.condition = condition;
+        this.validate = valid;
+        this.waitFor = waitFor;
+        this.simulated = simulated;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
 }

@@ -57,195 +57,185 @@ public class ExpServer {
 
     public ExpServer(int port, String type, ExpHandler ech, DataService ds) {
 
-	this.dataService = ds;
-	this.ch = ech;
+        this.dataService = ds;
+        this.ch = ech;
     }
-    
+
     public void process(Integer client, String request,
-	    BlockingQueue<Message> outQueue) {
+            BlockingQueue<Message> outQueue) {
 
-	ExpServiceImpl service = ((ExpServiceImpl) ch.getService());
+        ExpServiceImpl service = ((ExpServiceImpl) ch.getService());
 
-	int qindex = request.indexOf('?');
-	String arg = "";
-	if (qindex < 1) {
-	    qindex = request.length();
-	} else {
-	    arg = request.substring(qindex + 1);
-	}
+        int qindex = request.indexOf('?');
+        String arg = "";
+        if (qindex < 1) {
+            qindex = request.length();
+        } else {
+            arg = request.substring(qindex + 1);
+        }
 
-	logger.info(" request: " + request + " qindex: " + qindex);
+        logger.info(" request: " + request + " qindex: " + qindex);
 
-	String cmd = request.substring(9, qindex);
+        String cmd = request.substring(9, qindex);
 
-	// get args
-	logger.debug("arg: ###" + arg + "###");
-	Map<String, String> args = new HashMap<String, String>();
-	for (String s : arg.substring(0, arg.length()).split("&")) {
-	    String[] ss = s.split("=");
-	    if (ss[0] != null) {
-		args.put(ss[0], (ss.length > 1) ? ss[1] : "");
-	    }
-	}
+        // get args
+        logger.debug("arg: ###" + arg + "###");
+        Map<String, String> args = new HashMap<String, String>();
+        for (String s : arg.substring(0, arg.length()).split("&")) {
+            String[] ss = s.split("=");
+            if (ss[0] != null) {
+                args.put(ss[0], (ss.length > 1) ? ss[1] : "");
+            }
+        }
 
-	logger.info("server command " + cmd);
+        logger.info("server command " + cmd);
 
-	String output = null;
+        String output = null;
 
-	// do the deed
-	if (cmd.length() > 0) {
+        // do the deed
+        if (cmd.length() > 0) {
 
-	    StringBuilder msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder();
 
-	    Map<Integer, ExpData> data = service.getAllData();
+            Map<Integer, ExpData> data = service.getAllData();
 
-	    Map<String, Object> adds = new HashMap<String, Object>();
-	    adds.put("_agentdata", data);
-	    adds.put("_stages", service.getStages());
-	    adds.put("_query", args);
-	    // adds.put("_clients", ch.getClientInfoMapList());
+            Map<String, Object> adds = new HashMap<String, Object>();
+            adds.put("_agentdata", data);
+            adds.put("_stages", service.getStages());
+            adds.put("_query", args);
+            // adds.put("_clients", ch.getClientInfoMapList());
 
-	    String content = ExpTemplateUtil.evalVM(cmd, data, null, service,
-		    adds);
+            String content = ExpTemplateUtil.evalVM(cmd, data, null, service,
+                    adds);
 
-	    msg.append(content);
+            msg.append(content);
 
-	    output = msg.toString();
-	}
+            output = msg.toString();
+        }
 
-	if (args.containsKey("debug")) {
-	    System.out.println("" + args.get("debug") + " - serv: "
-		    + service.debug);
-	    if (args.get("debug").equals("ON")) {
-		service.debug = true;
-		outQueue.add(new Message("info:?debug=true"));
-	    }
-	    if (args.get("debug").equals("OFF")) {
-		service.debug = false;
-		outQueue.add(new Message("info:?debug=false"));
-	    }
-	    System.out.println("" + args.get("debug") + " - serv: "
-		    + service.debug);
-	}
+        if (args.containsKey("debug")) {
+            System.out.println("" + args.get("debug") + " - serv: "
+                    + service.debug);
+            if (args.get("debug").equals("ON")) {
+                service.debug = true;
+                outQueue.add(new Message("info:?debug=true"));
+            }
+            if (args.get("debug").equals("OFF")) {
+                service.debug = false;
+                outQueue.add(new Message("info:?debug=false"));
+            }
+            System.out.println("" + args.get("debug") + " - serv: "
+                    + service.debug);
+        }
 
-	if (args.containsKey("export")) {
-	    String filename = args.get("export");
+        if (args.containsKey("export")) {
+            String filename = args.get("export");
 
-	    if (filename != null && !filename.equals("")) {
+            if (filename != null && !filename.equals("")) {
 
-		File file = new File(filename);
+                File file = new File(filename);
 
-		String msg = "Exporting data to " + file.getAbsolutePath()
-			+ ", please wait...";
-		outQueue.add(new Message("vset", "_exp.html", "text/plain",
-			"YES", msg.getBytes()));
+                String msg = "Exporting data to " + file.getAbsolutePath()
+                        + ", please wait...";
+                outQueue.add(new Message("vset", "_exp.html", "text/plain",
+                        "YES", msg.getBytes()));
 
-		try {
-		    Thread.sleep(100);
-		} catch (InterruptedException e2) {
-		    // TODO Auto-generated catch block
-		    e2.printStackTrace();
-		}
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e2) {
+                    // TODO Auto-generated catch block
+                    e2.printStackTrace();
+                }
 
-		CSVWriter writer;
-		try {
-		    writer = new CSVWriter(file, "UTF-8");
-		    List<String[]> stages = dataService.stageInfos();
+                
+                CSVWriter writer;
+                try {
+                    List<String> headers = dataService.getAllVariableNames();
 
-		    List<String> headers = new ArrayList<String>();
-		    List<String[]> datas = new ArrayList<String[]>();
+                    writer = new CSVWriter(file, "UTF-8");
+                    List<String[]> stages = dataService.stageInfos();
 
-		    headers.add("_id");
-		    headers.add("_collection");
-		    headers.add("_template");
-		    headers.add("_stage");
-		    headers.add("_inmsg");
+                    headers.add(0,"_id");
+                    headers.add(1,"_collection");
+                    headers.add(2,"_template");
+                    headers.add(3,"_stage");
+                    headers.add(4,"_inmsg");
 
-		    for (String[] s : stages) {
-			String[] data = new String[headers.size()];
+                    System.out.println(Arrays.toString(headers.toArray()));
+                    writer.writeHeader(headers.toArray(new String[] {}));
+                    
+                    for (String[] s : stages) {
+                        String[] data = new String[headers.size()];
 
-			for (int i = 0; i < s.length; i++) {
-			    if (i < s.length) {
-				data[i] = s[i];
-			    }
-			}
+                        for (int i = 0; i < s.length; i++) {
+                            if (i < s.length) {
+                                data[i] = s[i];
+                            }
+                        }
 
-			Map<String, String> map = dataService.getMap(s[1],
-				Long.parseLong(s[0]));
-			for (Map.Entry<String, String> e : map.entrySet()) {
-			    if (!headers.contains(e.getKey())) {
-				headers.add(e.getKey());
-				data = Arrays.copyOf(data, headers.size());
-			    }
-			    data[headers.indexOf(e.getKey())] = e.getValue();
-			}
+                        Map<String, String> map = dataService.getMap(s[1],
+                                Long.parseLong(s[0]));
+                        for (Map.Entry<String, String> e : map.entrySet()) {
+                            data[headers.indexOf(e.getKey())] = e.getValue();
+                        }
 
-			// writer.writeData(data.toArray(new String[] {}));
-			datas.add(data);
-		    }
+                        writer.writeData(data);
+                    }
 
-		    System.out.println(Arrays.toString(headers.toArray()));
-		    writer.writeHeader(headers.toArray(new String[] {}));
+                    writer.close();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (NumberFormatException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
 
-		    for (String[] s : datas) {
-			writer.writeData(s);
-			// System.out.println(Arrays.toString(s));
-		    }
+                String msg2 = "Exporting data to " + file.getAbsolutePath()
+                        + ", sucessful...";
+                outQueue.add(new Message("vset", "_exp.html", "text/plain",
+                        "YES", msg2.getBytes()));
 
-		    writer.close();
-		} catch (IOException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
-		} catch (NumberFormatException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
-		} catch (SQLException e1) {
-		    // TODO Auto-generated catch block
-		    e1.printStackTrace();
-		}
+            }
 
-		String msg2 = "Exporting data to " + file.getAbsolutePath()
-			+ ", sucessful...";
-		outQueue.add(new Message("vset", "_exp.html", "text/plain",
-			"YES", msg2.getBytes()));
+        }
 
-	    }
+        if (args.containsKey("makeclient")) {
+            String props = args.get("makeclient");
+            try {
+                props = URLDecoder.decode(props, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
-	}
+            logger.debug("make client " + props);
 
-	if (args.containsKey("makeclient")) {
-	    String props = args.get("makeclient");
-	    try {
-		props = URLDecoder.decode(props, "UTF-8");
-	    } catch (UnsupportedEncodingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
+            Properties generalProp = new Properties();
 
-	    logger.debug("make client " + props);
+            InputStream is = new ByteArrayInputStream(props.getBytes());
+            try {
+                generalProp.load(is);
+                is.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
-	    Properties generalProp = new Properties();
+            // generalProp.put("coral.polyp.ontop", "false");
 
-	    InputStream is = new ByteArrayInputStream(props.getBytes());
-	    try {
-		generalProp.load(is);
-		is.close();
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
+            CoralPolyp.invokeClient(generalProp);
 
-	    // generalProp.put("coral.polyp.ontop", "false");
+            outQueue.add(new Message("info:?client=started", new byte[] {}));
+        }
 
-	    CoralPolyp.invokeClient(generalProp);
-
-	    outQueue.add(new Message("info:?client=started", new byte[] {}));
-	}
-
-	if (output != null) {
-	    outQueue.add(new Message("vset", "_exp.html", "text/html", "YES",
-		    output.getBytes()));
-	}
+        if (output != null) {
+            outQueue.add(new Message("vset", "_exp.html", "text/html", "YES",
+                    output.getBytes()));
+        }
     }
 
 }

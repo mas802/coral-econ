@@ -63,5 +63,8 @@ public interface DataService {
 	// UTIL
 	public abstract Object[][] stageInfo();
 
+	// SELECT
+    public abstract List<String> getAllVariableNames() throws SQLException;
+
 
 }
