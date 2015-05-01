@@ -363,21 +363,10 @@ public class ExpTemplateUtil {
                     try {
                         Method m = value.getClass().getMethod("unwrap");
                         value = m.invoke(value);
-                    } catch (SecurityException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (NoSuchMethodException e1) {
-                        // TODO Auto-generated catch block
-                        // e1.printStackTrace();
-                    } catch (IllegalArgumentException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (IllegalAccessException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    } catch (InvocationTargetException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    } catch (Exception e) {
+                        logger.error("Script failed with Exception "
+                                + e.getMessage());
+                        return errorPage(scriptname + " " + e.getMessage());
                     }
                 }
 
@@ -431,12 +420,10 @@ public class ExpTemplateUtil {
 
             }
 
-        } catch (FileNotFoundException e1) {
-            logger.error("File Not Found Exception ", e1);
-            return errorPage(scriptname + " " + e1.getMessage());
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Script failed with Exception "
+                    + e.getMessage());
+            return errorPage(scriptname + " " + e.getMessage());
         }
 
         return null;
