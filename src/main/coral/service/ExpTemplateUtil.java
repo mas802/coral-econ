@@ -363,10 +363,21 @@ public class ExpTemplateUtil {
                     try {
                         Method m = value.getClass().getMethod("unwrap");
                         value = m.invoke(value);
-                    } catch (Exception e) {
-                        logger.error("Script failed with Exception "
-                                + e.getMessage());
-                        return errorPage(scriptname + " " + e.getMessage());
+                    } catch (SecurityException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    } catch (NoSuchMethodException e1) {
+                        // TODO Auto-generated catch block
+                        // e1.printStackTrace();
+                    } catch (IllegalArgumentException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    } catch (IllegalAccessException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
+                    } catch (InvocationTargetException e1) {
+                        // TODO Auto-generated catch block
+                        e1.printStackTrace();
                     }
                 }
 
