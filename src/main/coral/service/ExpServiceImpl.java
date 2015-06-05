@@ -18,6 +18,7 @@ package coral.service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class ExpServiceImpl implements IExpService {
     private DataService dataService;
     private ExpTemplateUtil baseService;;
 
-    private FileWriter logwriter = null;
+    private Writer logwriter = null;
 
     public Map<Integer, ExpData> dataMap = new LinkedHashMap<Integer, ExpData>();
 
@@ -76,19 +77,29 @@ public class ExpServiceImpl implements IExpService {
 
     public ExpServiceImpl(ExpHandler clientHandler, Properties properties,
             DataService ds) {
+        this( clientHandler, properties, ds, null );
+
+        String logfilepath = properties.getProperty("coral.log.path", properties.getProperty("exp.basepath", "./"));
+        String logfilename = properties.getProperty("coral.log.name", "coral.log");
+        try {
+            this.logwriter = new FileWriter(new File(logfilepath, logfilename), true);
+        } catch (IOException e) {
+            // THIS IS NOT GOOD == RUNTIMEEXCEPTION
+            throw new RuntimeException( "fatal: log file could not be created ", e );
+        }
+
+    }
+        
+    public ExpServiceImpl(ExpHandler clientHandler, Properties properties,
+                DataService ds, Writer logwriter) {
         this._coralhost = CoralUtils.getHostStr();
         this.dataService = ds;
         this.ch = clientHandler;
-        this.baseService = new ExpTemplateUtil(properties.getProperty("exp.basepath", "./"));
-        try {
-            this.logwriter = new FileWriter(new File("coral.log"), true);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        this.logwriter = logwriter;
         
         this.startMarker = properties.getProperty("coral.cmd.start",
                 CoralUtils.START_KEY);
+        this.baseService = new ExpTemplateUtil(properties.getProperty("exp.basepath", "./"));
 
         logger.info("exp service started: " + this);
     }
