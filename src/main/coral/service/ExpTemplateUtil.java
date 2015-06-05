@@ -161,7 +161,7 @@ public class ExpTemplateUtil {
         Template template = null;
 
         try {
-            template = Velocity.getTemplate(t);
+            template = Velocity.getTemplate(t, "UTF-8");
         } catch (ResourceNotFoundException rnfe) {
             logger.error("error : cannot find template " + t, rnfe);
             return errorPage(template + ": " + rnfe.getMessage());

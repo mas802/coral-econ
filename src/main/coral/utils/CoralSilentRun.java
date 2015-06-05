@@ -1,4 +1,4 @@
-package coral.test;
+package coral.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +16,6 @@ import coral.model.ExpData;
 import coral.model.ExpStage;
 import coral.service.ExpServable;
 import coral.service.ExpServiceImpl;
-import coral.utils.CoralUtils;
 
 public class CoralSilentRun {
 
@@ -27,18 +26,19 @@ public class CoralSilentRun {
     
     public static void main(String[] args) throws InterruptedException {
 
-        Thread.sleep(200);
+        
+        Thread.sleep(2000);
         
         
         CoralSilentRun ce = new CoralSilentRun();
         
         Properties p = new Properties();
 
-        p.setProperty("exp.basepath", ".");
+        p.setProperty("exp.basepath", "/Users/mas/Dropbox/PEACH/peachSurvey");
         p.setProperty("exp.stagesfile", "stages.csv");
 
         p.setProperty("coral.db.name", "rerundb");
-        p.setProperty("coral.db.mode", "file");
+        p.setProperty("coral.db.mode", "mem");
         p.setProperty("coral.db.reset", "true");
         
         ce.init(p);
@@ -49,14 +49,14 @@ public class CoralSilentRun {
 
         testHandler.init(p, null, null);
 
-        int x = 100;
+        int x = 200;
 
         Set<Thread> threads = new HashSet<Thread>();
         
         ArrayList<ArrayBlockingQueue<Message>> clients = new ArrayList<ArrayBlockingQueue<Message>>(
-                16);
+                x);
         for (int i = 0; i < x; i++) {
-            clients.add(new ArrayBlockingQueue<Message>(1000));
+            clients.add(new ArrayBlockingQueue<Message>(100));
 
             testHandler.getService().addClient(i);
 
@@ -65,6 +65,13 @@ public class CoralSilentRun {
             test.start();
             
             threads.add(test);
+        
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         // kick off

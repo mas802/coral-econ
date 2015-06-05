@@ -195,14 +195,16 @@ public class ExpServiceImpl implements IExpService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        
+        /*
         // SAVE BEFORE INCOMING DATA
         data.put("_now", now);
         data.put("_nownano", nownano);
         data.put("_mode", "enter");
         data._msgCounter++;
         dataService.saveOETData(Integer.toString(id), data);
-
+        */
+        
         Map<String, String> args = CoralUtils.urlToMap(arg);
 
         // VALIDATION and debug/flow messages
@@ -368,15 +370,16 @@ public class ExpServiceImpl implements IExpService {
             data.setNewpage(false);
         }
 
+        /*
         // SAVE OUTGOING DATA
-
         data.put("_now", Long.toString(System.currentTimeMillis()));
         data.put("_nownano", Long.toString(System.nanoTime()));
         data.put("_mode", "outgoing");
         data.put("_coralhost", _coralhost);
         data._msgCounter++;
         dataService.saveOETData(Integer.toString(id), data);
-
+        */
+        
         // BROADCAST OR ADVANCE
 
         if (output == null) {
