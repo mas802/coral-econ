@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4;
 
 import coral.model.ExpData;
 import coral.service.ErrorFlag;
-
+import coral.service.ExpTemplateUtil;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4.class)
@@ -33,7 +33,7 @@ public class TestErrorFlag {
     public void testErrorFlag() {
 
         {
-            ErrorFlag ef = new ErrorFlag(false);
+            ErrorFlag ef = new ErrorFlag(false, new ExpTemplateUtil(""));
 
             ExpData m = new ExpData();
 
@@ -61,7 +61,7 @@ public class TestErrorFlag {
         {
             System.out.println();
 
-            ErrorFlag ef = new ErrorFlag(false);
+            ErrorFlag ef = new ErrorFlag(false, new ExpTemplateUtil(""));
             ExpData m = new ExpData();
 
             m.put("test", "4.02"); // false
@@ -92,14 +92,14 @@ public class TestErrorFlag {
 
         {
             String[] props = new String[] { "test={hello::hallo::hullo}" };
-            ErrorFlag ef = new ErrorFlag(false);
+            ErrorFlag ef = new ErrorFlag(false, new ExpTemplateUtil(""));
             ef.validateFormated(m, props);
             assertTrue(ef.isValid());
         }
 
         {
             String[] props2 = new String[] { "test2={hello::hallo::hullo}" };
-            ErrorFlag ef2 = new ErrorFlag(false);
+            ErrorFlag ef2 = new ErrorFlag(false, new ExpTemplateUtil(""));
             ef2.validateFormated(m, props2);
             assertTrue(!ef2.isValid());
         }

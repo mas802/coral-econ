@@ -45,7 +45,10 @@ public class ErrorFlag extends HashMap<String, String> {
     private boolean alwaystrue = false;
     private boolean valid = true;
 
-    public ErrorFlag(boolean alwaystrue) {
+    private ExpTemplateUtil util;
+    
+    public ErrorFlag(boolean alwaystrue, ExpTemplateUtil util) {
+        this.util = util;
         this.alwaystrue = alwaystrue;
     }
 
@@ -101,7 +104,7 @@ public class ErrorFlag extends HashMap<String, String> {
 
     public boolean validateJs(String name, String exp, ExpData values) {
         boolean ok = true;
-        Object o = ExpTemplateUtil.evalExp(exp, values);
+        Object o = util.evalExp(exp, values);
 
         if ((o == null) || !(o instanceof Boolean)) {
             ok = false;

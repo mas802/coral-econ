@@ -49,7 +49,11 @@ public class ExpServiceImpl implements IExpService {
     private ExpHandler ch;
     // private int id;
     private DataService dataService;
-    private ExpTemplateUtil baseService;;
+    private ExpTemplateUtil util;
+
+    public ExpTemplateUtil getUtil() {
+        return util;
+    }
 
     private Writer logwriter = null;
 
@@ -60,8 +64,6 @@ public class ExpServiceImpl implements IExpService {
     Map<Integer, ArrayList<Integer>> clientstagecounter = new HashMap<Integer, ArrayList<Integer>>();
 
     public boolean debug = false;
-
-    private String _coralhost;
 
     private final String startMarker;
     
@@ -92,14 +94,13 @@ public class ExpServiceImpl implements IExpService {
         
     public ExpServiceImpl(ExpHandler clientHandler, Properties properties,
                 DataService ds, Writer logwriter) {
-        this._coralhost = CoralUtils.getHostStr();
         this.dataService = ds;
         this.ch = clientHandler;
         this.logwriter = logwriter;
         
         this.startMarker = properties.getProperty("coral.cmd.start",
                 CoralUtils.START_KEY);
-        this.baseService = new ExpTemplateUtil(properties.getProperty("exp.basepath", "./"));
+        this.util = new ExpTemplateUtil(properties.getProperty("exp.basepath", "./"));
 
         logger.info("exp service started: " + this);
     }
@@ -172,12 +173,12 @@ public class ExpServiceImpl implements IExpService {
             e.printStackTrace();
         }
 
-        ErrorFlag error = new ErrorFlag(true);
+        ErrorFlag error = new ErrorFlag(true, util);
 
         // EVALUATE SCRIPT
         String output = null;
         logger.info("evaluate template " + filename);
-        output = baseService.eval(filename, data, error, this);
+        output = util.eval(filename, data, error, this);
         ch.broadcast(id, output);
     }
 
@@ -219,7 +220,7 @@ public class ExpServiceImpl implements IExpService {
         Map<String, String> args = CoralUtils.urlToMap(arg);
 
         // VALIDATION and debug/flow messages
-        ErrorFlag condition = new ErrorFlag(false);
+        ErrorFlag condition = new ErrorFlag(false, util);
         boolean skiperror = args.containsKey("skiperror");
         boolean reload = args.containsKey("reload")
                 || args.containsKey("refreshid");
@@ -234,7 +235,7 @@ public class ExpServiceImpl implements IExpService {
 
         boolean isvalid = false;
 
-        ErrorFlag error = new ErrorFlag(skiperror || reload || skipback);
+        ErrorFlag error = new ErrorFlag(skiperror || reload || skipback, util);
 
         ExpStage enterstage = stages.get(data.stageCounter());
 
@@ -375,7 +376,7 @@ public class ExpServiceImpl implements IExpService {
             data.put("template", thisstage.getTemplate());
             data.put("_stageId",
                     thisstage.hashCode() + "" + (int) (Math.random() * 99999));
-            output = baseService.eval(thisstage.getTemplate(), data, error,
+            output = util.eval(thisstage.getTemplate(), data, error,
                     this);
 
             data.setNewpage(false);

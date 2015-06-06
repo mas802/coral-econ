@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +104,7 @@ public class ExpServer {
             adds.put("_query", args);
             // adds.put("_clients", ch.getClientInfoMapList());
 
-            String content = ExpTemplateUtil.evalVM(cmd, data, null, service,
+            String content = service.getUtil().evalVM(cmd, data, null, service,
                     adds);
 
             msg.append(content);
@@ -147,7 +146,6 @@ public class ExpServer {
                     e2.printStackTrace();
                 }
 
-                
                 CSVWriter writer;
                 try {
                     List<String> headers = dataService.getAllVariableNames();
@@ -155,15 +153,15 @@ public class ExpServer {
                     writer = new CSVWriter(file, "UTF-8");
                     List<String[]> stages = dataService.stageInfos();
 
-                    headers.add(0,"_id");
-                    headers.add(1,"_collection");
-                    headers.add(2,"_template");
-                    headers.add(3,"_stage");
-                    headers.add(4,"_inmsg");
+                    headers.add(0, "_id");
+                    headers.add(1, "_collection");
+                    headers.add(2, "_template");
+                    headers.add(3, "_stage");
+                    headers.add(4, "_inmsg");
 
                     System.out.println(Arrays.toString(headers.toArray()));
                     writer.writeHeader(headers.toArray(new String[] {}));
-                    
+
                     for (String[] s : stages) {
                         String[] data = new String[headers.size()];
 
