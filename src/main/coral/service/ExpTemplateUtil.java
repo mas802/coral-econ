@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
@@ -54,6 +54,9 @@ public class ExpTemplateUtil {
             .getLog(ExpTemplateUtil.class);
 
     String basepath = "";
+    
+    private VelocityEngine velocityEngine;
+    
 
     public ExpTemplateUtil(String basepath) {
 
@@ -77,8 +80,8 @@ public class ExpTemplateUtil {
             p.setProperty("runtime.log.logsystem.class",
                     "org.apache.velocity.runtime.log.NullLogSystem");
 
-            Velocity.init(p);
-
+            this.velocityEngine = new VelocityEngine(p);
+            
         } catch (Exception e1) {
             logger.error("Error in velocity setup", e1);
             throw new RuntimeException(e1);
@@ -154,7 +157,7 @@ public class ExpTemplateUtil {
         Template template = null;
 
         try {
-            template = Velocity.getTemplate(t, "UTF-8");
+            template = velocityEngine.getTemplate(t, "UTF-8");
         } catch (ResourceNotFoundException rnfe) {
             logger.error("error : cannot find template " + t, rnfe);
             return errorPage(template + ": " + rnfe.getMessage());
