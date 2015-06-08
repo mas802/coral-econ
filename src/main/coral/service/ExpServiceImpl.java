@@ -363,7 +363,7 @@ public class ExpServiceImpl implements IExpService {
                     .getCondition()[0].equals("*"))) {
             ch.sendRes(id, thisstage.getTemplate());
             try {
-                Thread.sleep(100);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 logger.error("main prosses interupted", e);
