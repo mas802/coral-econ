@@ -154,6 +154,11 @@ public class ExpServiceImpl implements IExpService {
     public void removeClient(Integer id) {
         synchronized (dataMap) {
             dataMap.remove(id);
+            
+            int index = 0;
+            for ( ExpData data : dataMap.values() ) {
+                data.put("agent", index++);
+            }
         }
     }
 
