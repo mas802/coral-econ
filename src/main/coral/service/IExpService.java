@@ -15,11 +15,15 @@
  */
 package coral.service;
 
+import java.util.Map;
+
 import coral.model.ExpData;
 
 public interface IExpService {
 
     public void process(Integer id, String msg);
+
+    public void process(Integer id, ExpData data, Map<String,Object> args);
 
     public ExpData getData(Integer id);
 

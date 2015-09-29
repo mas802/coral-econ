@@ -188,7 +188,8 @@ public class ExpServiceImpl implements IExpService {
     }
 
     /**
-     * Implementation of the core loop as described.
+     * Process that parses the input and delegates
+     * 
      */
     public synchronized void process(Integer id, String arg) {
         // TODO, get an appropriate data objects (no reuse!)
@@ -212,6 +213,20 @@ public class ExpServiceImpl implements IExpService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Map<String, Object> args = CoralUtils.urlToMap(arg);
+
+        process(id, data, args);
+
+    }
+
+    
+    
+    /**
+    * Implementation of the core loop as described.
+    */
+    public synchronized void process(Integer id, ExpData data, Map<String, Object> args) {
+        
         
         /*
         // SAVE BEFORE INCOMING DATA
@@ -222,8 +237,6 @@ public class ExpServiceImpl implements IExpService {
         dataService.saveOETData(Integer.toString(id), data);
         */
         
-        Map<String, String> args = CoralUtils.urlToMap(arg);
-
         // VALIDATION and debug/flow messages
         ErrorFlag condition = new ErrorFlag(false, util);
         boolean skiperror = args.containsKey("skiperror");
@@ -260,7 +273,7 @@ public class ExpServiceImpl implements IExpService {
                                                                 // this is
                                                                 // enforced?
                 String stageId = data.getString("_stageId");
-                String stageIdCheck = args.get("_stageIdCheck");
+                String stageIdCheck = args.get("_stageIdCheck").toString();
                 if (!stageId.equals(stageIdCheck)) {
                     isvalid = false;
                     // todo, check adverse effects

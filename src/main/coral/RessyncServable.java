@@ -83,7 +83,7 @@ public class RessyncServable implements Servable {
 				logger.debug( "check  " + filename + " - " + cmd.getFullContent());
 			}
 
-			Map<String, String> q = CoralUtils.urlToMap(cmd.getFullContent());
+			Map<String, Object> q = CoralUtils.urlToMap(cmd.getFullContent());
 
 			if (logger.isDebugEnabled()) { 
 				logger.debug( "check map " + q.toString() );
@@ -97,7 +97,7 @@ public class RessyncServable implements Servable {
 			if ( file.exists() ) {
 				long version = file.lastModified();
 				
-				long expectedVersion = Long.parseLong(q.get("version"));
+				long expectedVersion = Long.parseLong(q.get("version").toString());
 				
 				if ( expectedVersion > version ) {
 					request = true;
@@ -107,7 +107,7 @@ public class RessyncServable implements Servable {
 			}
 		
 			if (request) {
-				outQueue.add(new Message(q.get("synccmd"), new byte[] {}));
+				outQueue.add(new Message(q.get("synccmd").toString(), new byte[] {}));
 			}
 		}
 	}

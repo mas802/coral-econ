@@ -81,8 +81,8 @@ public class CoralUtils {
      * @param arg
      * @return
      */
-    public static Map<String, String> urlToMap(String arg) {
-        Map<String, String> args = new HashMap<String, String>();
+    public static Map<String, Object> urlToMap(String arg) {
+        Map<String, Object> args = new HashMap<String, Object>();
         int startOfQuery = arg.indexOf('?') + 1;
         for (String part : arg.substring(startOfQuery, arg.length()).split("&")) {
             String[] var = part.split("=");
