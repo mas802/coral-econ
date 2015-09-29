@@ -152,6 +152,7 @@ public class CoralHead {
                                     org.eclipse.swt.widgets.Event e) {
                                 if (e.widget == shell) {
                                     // TODO Auto-generated method stub
+                                    shell.dispose();
                                     System.exit(0);
                                 }
                             }
