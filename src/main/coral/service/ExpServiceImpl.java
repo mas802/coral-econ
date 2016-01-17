@@ -59,7 +59,7 @@ public class ExpServiceImpl implements IExpService {
 
     public Map<Integer, ExpData> dataMap = new LinkedHashMap<Integer, ExpData>();
 
-    private List<ExpStage> stages = new ArrayList<ExpStage>();
+    private List<ExpStage> stages;
 
     Map<Integer, ArrayList<Integer>> clientstagecounter = new HashMap<Integer, ArrayList<Integer>>();
 
@@ -105,17 +105,29 @@ public class ExpServiceImpl implements IExpService {
         logger.info("exp service started: " + this);
     }
 
+    /* 
+     * init needs to be called to read a stages file
+     */
     public void init(String basepath, String stagefile, String variants) {
 
-        ExpStage startstage = new ExpStage("_START");
-        stages.add(startstage);
+        List<ExpStage> lines = new ArrayList<ExpStage>();
 
-        List<ExpStage> lines = CoralUtils.readStages(new File(basepath,
-                stagefile), variants, new File(basepath));
+        lines.add(new ExpStage("_START"));
+        lines.addAll(CoralUtils.readStages(new File(basepath,
+                stagefile), variants, new File(basepath)));
 
-        stages.addAll(lines);
+        initWithStages(lines);
     }
 
+
+    /*
+     * alternate init method to load stages directly.
+     */
+    public void initWithStages(List<ExpStage> initstages) {
+        this.stages = new ArrayList<ExpStage>();
+        this.stages.addAll(initstages);
+    }
+    
     public void addClient(Integer id) {
 
         if (!dataMap.containsKey(id)) {
