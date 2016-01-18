@@ -15,6 +15,7 @@
  */
 package coral.test;
 
+import java.util.ArrayList;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -22,6 +23,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import coral.model.ExpData;
+import coral.model.ExpStage;
 import coral.service.ExpServiceImpl;
 import coral.service.ExpTemplateUtil;
 
@@ -36,6 +38,8 @@ public class TestPassingVar {
 	    
 	    
 	    ExpServiceImpl service = new ExpServiceImpl(null, new Properties(), null);
+	    
+	    service.initWithStages(new ArrayList<ExpStage>());
 	    
 	    service.addClient(0);
 	    service.addClient(1);
