@@ -1,5 +1,7 @@
 Coral is a lightweight framework that aims to facilitate the design of economic experiments while being as flexible as possible. We currently still building up the webpage, but if you have a question feel free to contact me (Markus Schaffner) at coral(at)802.ch.
 
+(!) currently the pom.xml file is disabled due to security issues, let me know if you depend on an update
+
 ## NEWS, 17/03/2015 Moved from Google Code ##
 
 The project has been moved from google code to github.
